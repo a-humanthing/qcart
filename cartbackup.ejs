@@ -1,0 +1,90 @@
+<% layout('/layouts/userbp') %> 
+<section class="py-5">
+    <div class="">
+        <div class="row ms-5 p-2 pb-3">
+            <h4 class="text-primary">Cart</h4>
+        </div>
+        <div class="row justify-content-center ">
+
+                <div class=" col-12 col-md-7  mb-4">
+                    <% for(let item of cart) {%>
+                    <div class="row mb-3">
+                    <div class="card">
+                        <div class="col-md-3">
+                            <% for(let img of item.product.image){ %> 
+                            <img class="card-img rounded-0 img-fluid" src="<%= img.url %>" alt="">
+                                <% } %> 
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <%= item.product.productname %> 
+                                </h5>
+                                <small class="text-muted ">
+                                    <%= item.product.price %> 
+                                </small>
+                                <div class="mb-3 " >
+                                    <form style="display: inline;" >
+                                        <button type="submit" id="reduceCartQty"  onclick="decreasecount('<%=item._id%>')" class="btn btn-primary">-</button>
+                                    </form>
+                                    <a href="" class="btn btn-primary"><%=item.quantity %></a>
+        
+                                    <form style="display: inline;" action="/product/cart/<%=item.product._id %>" method="post">
+                                        <button type="submit" class="btn btn-primary">+</button>
+                                    </form>
+                                </div>
+                                    <div class="mb-3">
+                                        <form style="display: inline;" action="/product/wishlist/<%=item.product._id%>" class="mb-3" method="post">
+                                            <button type="submit" class="btn btn-primary">Add to WishList</button>
+                                        </form>
+                                    </div>    
+                                    <div class="mb-3">
+                                        
+                                        <form style="display: inline;" action="/product/cart/<%=item.product._id%>?_method=DELETE" method="post">
+                                        <button type="submit" class="btn btn-danger">Remove</button>
+                                        </form>
+                                    </div>
+                                    
+        
+                                </div>
+                                
+                                 
+                            </div>
+                        </div>   
+                    </div>  
+                    
+                        <% } %>  
+                </div>
+    
+                <div class=" col-12 col-md-3  ms-3 card p-4"  style="height: 20vmax;">
+           
+                    <p>PRICE DETAILS</p>
+                    <hr>
+                    <p>Price:<%=cartFull.bill %></p>
+                    <div class="mt-auto">
+                        <% if(cartFull.bill>0){ %> 
+                        <a href="/product/checkout" class="btn btn-primary">Place Order</a>
+                        <% }else{ %>
+                            <a href="/user/home" class="btn btn-primary">Add To Cart</a>
+                            <% } %>  
+                    </div>
+                   
+                </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function decreasecount(proid){
+        $.ajax({
+            url:'/product/reduceqty',
+            method:'POST',
+            data:{proid:proid},
+            success:location.reload()
+
+        })
+    }
+ 
+</script>
+          
+ 

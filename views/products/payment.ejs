@@ -1,0 +1,166 @@
+<% layout('/layouts/userbp') %>
+<div class=" p-5" >
+  <h3>Payment</h3>
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6 m-2 px-0">
+      <div class="card shadow-sm mb-3 p-3">
+        <div class="row">
+          <div class="col-6">
+            1.Login
+            <h5 class="ms-3"><%=username %></h5>
+          </div>
+          <div class="col-3 m-auto">
+            <button class="btn shadow btn-secondary ms-auto">Change</button>
+          </div>
+        </div>
+      </div>
+      <div class="mb-3 p-3 shadow-sm card">
+        <div class="row">
+          <div class="ps-2 col-12 pb-2 mb-3 border-bottom">
+            2.Delivery Address
+          </div>
+          <div class="col-8 pb-2">
+            <div class="mb-3">
+              <span class="btn btn-outline-secondary py-0"
+                ><%=deliveryaddress.addresstype %>
+              </span>
+              <%=deliveryaddress.name %> <%=deliveryaddress.mobile %> <br />
+              <%=deliveryaddress.address %> <%=deliveryaddress.cityDistrictTown
+              %> <%=deliveryaddress.pincode %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3 shadow-sm p-2 card">
+        <div class="row">
+          <div class="ps-2 col-12 pb-2 mb-3 border-bottom">3.Order Summary</div>
+        </div>
+        <div class="row ">
+          <div class="col-12">
+            <%=quantity %> item
+          </div>
+          
+        </div>
+      </div>
+      <div class="mb-3 shadow-sm p-2 card">
+        <div class="row">
+            <div class="col-12 ps-2 pb-2 mb-3 border-bottom">
+                4.Payment Options
+            </div>
+            <form id="pay"  >
+                <div class="col-12">
+                    <input type="radio" name="paymethod" checked value="cod">COD
+                </div>
+                <div class="col-12">
+                    <input type="radio" name="paymethod" value="online">Online
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Click to Complete Order</button>
+                </div>
+            </form>
+        </div>
+        
+       </div>
+    </div>
+    <div class="col-12 col-md-3 m-2 py-2 card" style="height: 15vmax">
+      <div class="border-bottom mb-3">
+        <h5 class="ms-3 text-secondary">Price Details</h5>
+      </div>
+      <div class="row mb-3">
+        <div class="col-6">Price(<%=quantity %> item)</div>
+        <div class="col-6"><%=totalPrice %></div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-6 ">
+            Offer Price(coupon):
+        </div>
+        <div class="col-6 ">
+            <%=offerPrice %> 
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-6">Delivery Charges</div>
+        <div class="col-6"><%=deliveryCharge %></div>
+      </div>
+      <div class="row border-bottom mb-3">
+        <div class="col-6">Packing Charges</div>
+        <div class="col-6"><%=packagingCharge %></div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-6">Total Payable</div>
+        <div class="col-6"><%=total %></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+
+    const form = document.querySelector('#pay')
+
+  
+      form.addEventListener('submit',(e)=>{
+      e.preventDefault();
+      const paymethod = form.elements.paymethod.value;
+      fetch('/product/order',{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paymethod })
+        }).then(res => res.json()).then(data => {
+          if(data.cod===true){
+            window.location.href='/product/ordercompletion'
+          }
+          console.log('data=',data)
+          const order = data.order
+          rzrpay(order);
+
+        }).catch(e=>{
+          console.log('erros=',e)
+        })
+        })
+
+        function rzrpay(data){
+          console.log('amount=',data.amount)
+          var options = {
+            "key": "rzp_test_hMqwAizfgv8cdG", // Enter the Key ID generated from the Dashboard
+            "amount": data.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "Qcart",
+            "description": "Test Transaction",
+            "image": "https://img.icons8.com/ios-filled/344/amazon-alexa-logo.png",
+            "order_id": data.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "handler": function (response){
+                // alert(`${response}`)
+                // alert(response.razorpay_payment_id);
+                // alert(response.razorpay_order_id);
+                // alert(response.razorpay_signature)
+                verifypayment(response,data)
+            },
+            "theme": {
+                "color": "#444444"
+            }
+          };
+          const rzp1 = new Razorpay(options);
+          rzp1.open();
+
+        }
+        function verifypayment(payment,order){
+
+          fetch('/product/verifypayment',{
+            method:'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ payment,order})
+          }).then(res=>res.json()).then(data=>{
+            console.log('data===',data.success);
+            if(data.success){
+              window.location.href='/product/ordercompletion'
+            }else{
+              window.location.reload();
+            }
+          })
+         
+
+        }
+</script>
+

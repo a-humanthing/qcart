@@ -1,0 +1,65 @@
+<% layout('/layouts/newbp') %> 
+<div class="p-5 col-6 offset-3">
+<h1>Order Details</h1>
+<form action="/admin/order/<%=order._id %>?_method=PUT" method="post" class="needs-validation"  novalidate>
+    <div class="mb-3 border-bottom">
+        <label class="form-label" for="username">User Name</label>
+        <div id="username">
+           <h3> <%=order.user.username %></h3>
+        </div>
+    </div>
+    <div class="mb-5">
+        <label class="form-label" for="orderstatus"><h5>Order Status:</h5></label>
+        <select class="form-control" name="orderstatus" id="orderstatus"  >
+          
+            <% for(let i=0;i<orderstatus.length;i++){ %> 
+                <% if(i<index){%>
+                <option value="<%=orderstatus[i] %>" disabled ><%=orderstatus[i] %></option>
+                <% }else{ %> 
+                    <option value="<%=orderstatus[i] %>"><%=orderstatus[i] %></option>
+                <% } %> 
+            <% } %> 
+            
+         
+        </select>
+        <!-- <input class="form-control" type="text" id="category" name="category" required> -->
+    </div>
+    <div class="mb-5">
+        
+        <label class="form-label" for="items"><h5>Items:</h5></label>
+        <ol id="items">
+          <% for(let item of order.items){ %> 
+            <li><%=item.product.productname  %> </li>
+          <% } %> 
+        </ol>
+
+    </div>
+    <div class="mb-5">
+        <label class="form-label" for="bill">Bill Amount:</label>
+        <h6><%=order.bill %> </h6>
+    </div>
+    <div class="mb-5">
+        <label class="form-label" for="method">Payment Method:</label>
+        <ul>
+            <li><%=order.paymentType %> </li>
+        </ul>
+    </div>
+    <div class="">
+        <label class="form-label" for="ordereddate">Ordered Date:</label>
+        <% for(let status of order.orderStatus){ %> 
+        <input class="form-control" type="text" disabled value="<%=new Date(status.date).toLocaleDateString()%>">
+    <div class="">
+        <label class="form-label" for="deliverydate">Delivery Date:</label>
+        <input type="text" class="form-control" value="<%=new Date(ddate).toLocaleDateString()%>" disabled>
+    </div>
+    <div class="mb-5">
+        <label class="form-label" for="expecteddate">Update Delivery Date:</label>
+        <input class="form-control" type="date" value="<%=new Date(ddate).toLocaleDateString()%>" name="expecteddate"  min="<%=new Date(status.date).toLocaleDateString()%>" placeholder="Expected Date">
+    </div>
+        <% } %> 
+    </div>
+    <div class="mb-5">
+        <button type="submit" class="btn btn-primary">Update</button>
+    </div>
+</form>
+</div>

@@ -1,0 +1,35 @@
+.userLogin{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4em;
+    border: 1px solid brown;
+}
+.leftLogin{
+    border: 1px solid rgb(41, 92, 133);
+    padding: 4em;
+   
+}
+.rightLogin{
+ 
+    padding: 1em;
+    width: 200px;
+    height: 260px;
+}
+.primaryButton{
+    background-color: #59ABFF;
+    color: white;
+}
+.primaryButton:hover{
+    
+    border: 1px solid #4444e1 !important;
+    background-color: grey;
+}
+.sortKeys{
+    text-decoration: none;
+    color: black;
+
+}
+.sortKeys:active{
+    color: #4444e1;
+}

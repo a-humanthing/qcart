@@ -1,0 +1,37 @@
+<% layout('/layouts/boilerplate') %> 
+
+   <h1>All products</h1> 
+   
+   
+   
+        <% for(let pro of product) {%>
+            <a href="/product/<%=pro._id %>">
+                <div class="card mb-3" >
+                    <div class="row">
+                        <div class="col-md-4">
+                            <% for(let img of pro.image){ %> 
+                            <img class="img-fluid" src="<%= img.url %>" alt="">
+                            <% } %> 
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <%= pro.productname %> 
+                                </h5>
+                                <p class="card-text">
+                                    <%= pro.category %> 
+                                </p>
+                                <small class="text-muted">
+                                    <%= pro.description %> 
+                                </small>
+                            
+                                
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <% } %>  
+   
+   

@@ -1,0 +1,15 @@
+.profile-side{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+   
+
+}
+.card{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.profile-list{
+    font-size: 5px;
+}

@@ -1,0 +1,69 @@
+
+<% layout('/layouts/newbp') %> 
+<!-- <section class="">
+    <div class="userLogin shadow mb-5 p-5 container-fluid">
+        <div class="leftLogin ">
+            <h3>Admin Login</h3>
+            <form action="/admin/login" method="post" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label class="form-label" for="username">Username:</label>
+                    <input class="form-control" type="text" id="username" name="username" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="password">Password:</label>
+                    <input class="form-control" type="password" id="password" name="password" required>
+                    <p class="logCheck"><a href="/user/login">not an admin?log as user</a></p>
+                </div>
+                
+                <button class="btn primaryButton">Login</button>
+            </form>
+
+        </div>
+        <div class="rightLogin">
+            <p class="text-center">Amazing Bussiness Starts with Great Products</p>
+            <img src="/image/add products.png" class="img-fluid" alt="">
+        </div>
+    </div>
+</section> -->
+
+
+        <div class="row w-100 mx-0">
+          <div class="col-lg-4 mx-auto">
+            <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+              <div class="brand-logo">
+                <img src="/image/logo.png" alt="logo">
+              </div>
+              <h4>Hello! let's get started</h4>
+              <h6 class="font-weight-light">Sign in to continue.</h6>
+              <form action="/admin/login" method="post" class="needs-validation pt-3" novalidate>
+                <div class="form-group">
+                  <input type="text" class="form-control form-control-lg" name="username" id="username" placeholder="Username">
+                </div>
+                <div class="form-group">
+                  <input type="password" class="form-control form-control-lg" id="password" name="password" placeholder="Password">
+                </div>
+                <div class="mt-3">
+                  <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" type="submit">SIGN IN</a>
+                </div>
+                <div class="my-2 d-flex justify-content-between align-items-center">
+                  <div class="form-check">
+                    <label class="form-check-label text-muted">
+                      <input type="checkbox" class="form-check-input">
+                      Keep me signed in
+                    </label>
+                  </div>
+                  <a href="#" class="auth-link text-black">Forgot password?</a>
+                </div>
+                <div class="mb-2">
+                  <a type="button" href="/user/login" class="btn btn-block btn-facebook auth-form-btn">
+                    <i class="ti-facebook mr-2"></i>Login as User
+                  </a>
+                </div>
+                <div class="text-center mt-4 font-weight-light">
+                  Don't have an account? <a href="" class="text-primary">Create</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+  

@@ -1,0 +1,24 @@
+<% layout('/layouts/newbp') %> 
+<div class="p-5">
+
+
+<div class="col-6 ">
+    <div class="card shadow mb-3">
+        <%for(let img of products.image){ %> 
+          <img src="<%=img.url %>" class="card-img-top" alt="...">
+        <% } %> 
+        <div class="card-body">
+          <h5 class="card-title">Item Name: <%= products.productname %></h5>
+          <p class="card-text text-muted">Category: <%= products.category %></p>
+          <p class="card-text text-muted">Sub Category: <%= products.subcategory.subcategory %></p>
+          <p class="card-text ">Price: <%= products.price %></p>
+          <p class="card-text">Description: <%= products.description %></p>
+          <h6 class="text-muted">Availability: <%= products.quantity %> </h6>
+         
+        </div>
+      </div>
+     
+    
+    
+</div>
+</div>

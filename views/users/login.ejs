@@ -1,0 +1,24 @@
+<% layout('/layouts/userbp') %> 
+<section>
+    <div class="container p-5 m-5">
+        <div class="shadow p-5 mb-5">
+                <h3>Login</h3>
+                <form action="/user/login" method="post" class="needs-validation" novalidate>
+                    <div class="mb-3 ">
+                        <label class="form-label" for="username">Username:</label>
+                        <input class="form-control" type="text" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="password">Password:</label>
+                        <input class="form-control" type="password" id="password" name="password" required>
+                        <p class="logCheck"><a href="/user/register">don't have an accout?create One</a></p>
+    
+                    </div>
+                    <button class="btn btn-primary">Login</button>
+                    <a href="/user/otplogin" class="btn btn-info">Otp Login</a>
+                </form>
+           
+        </div>
+    </div>
+    
+</section>

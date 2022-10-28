@@ -1,0 +1,47 @@
+<% layout('/layouts/newbp') %> 
+<div class="p-5 m-5">
+    <div class="mb-5">
+        <h1>Update Banner</h1>
+    </div>
+    <form action="/admin/banner/<%=banner.id %>/update?_method=PUT" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <input type="text" class="form-control" name="bannerName" value="<%=banner.bannerName %>" placeholder="Enter Banner Name " id="bannerName"  required >
+
+        </div>
+     
+        <div class="mb-3"  >
+            <input type="text" class="form-control" placeholder="Enter Main Heading" value="<%=banner.mainHeading %>"  name="mainHeading" id="mainHeading"  >
+        </div>
+        <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Enter Sub Heading" value="<%=banner.subHeading %>" name="subHeading" id="subHeading"  >
+        </div>
+        <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Enter Description" value="<%=banner.description%>" name="description" id="description"  >
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="image">Image</label>
+            <input class="form-control" type="file" name="image" id="image" multiple >
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+        
+    </form>
+</div>
+
+<script>
+    
+
+    function hideInput(){
+        
+    
+    if(document.getElementById('percentFalse').checked){
+        document.getElementById('percentbox').style.display='none';
+        document.getElementById('percentage').disabled=true;
+    }else{
+        document.getElementById('percentbox').style.display='block';
+    }
+}
+
+
+</script>

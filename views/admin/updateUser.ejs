@@ -1,0 +1,31 @@
+<% layout('/layouts/newbp') %> 
+<div class="p-5">
+<h1>Update User</h1>
+<form action="/admin/users/<%=user._id %>/update?_method=PUT" method="post" id="Myform" class="needs-validation" novalidate>
+    <div class="mb-3">
+        <label class="form-label" for="username">Username:</label>
+        <input class="form-control" type="text" id="username" name="username" value="<%=user.username  %>" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="email">Email:</label>
+        <input class="form-control" type="email" id="email" name="email" value="<%=user.email %>" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="status">Status:</label>
+        <select name="status" id="status">
+            <% if(user.status==='active'){ %> 
+            <option value="active">Active</option>
+            <option value="blocked">Block</option>
+            <% }else { %>
+                <option value="blocked">Blocked</option>
+                <option value="active">Activate</option>
+                <% } %>  
+            
+        </select>
+
+    </div>
+   
+   
+    <button class="btn btn-primary" onclick="check()">Submit</button>
+</form>
+</div>

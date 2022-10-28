@@ -1,0 +1,56 @@
+<% layout('/layouts/newbp') %> 
+<div class="p-5 m-5">
+    <div class="my-5">
+<form action="/admin/createsub" method="post" class="needs-validation" novalidate>
+    <label for="subcategory">Create Sub Category:</label>
+    <input type="text" name="subcategory" id="subcategory" required>
+    <label for="categoryId">Choose a Category:</label>
+        <select name="categoryId" id="categoryId">
+            <% for(let c of category){ %> 
+            <option name="categoryId" value="<%= c._id %>"><%= c.category %></option>
+            <% } %> 
+        </select>
+    <button class="btn btn-primary">Submit</button>
+</form>
+</div>
+
+
+<table id="categoryList" class="display table table-secondary">
+    <thead>
+        <tr>
+            <th> Number </th>
+            <th>Category</th>
+            <th>Sub Category</th>
+            <th colspan="2" class="text-center">Action</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+    <% for(let i=0;i<subcategory.length;i++){ %> 
+        <tr>
+           
+            <td><%= i+1 %> </td>
+            <td><%= subcategory[i].category[0].category %> </td>
+            <td><%= subcategory[i].subcategory %> </td>
+            <td><a href="/admin/subcategory/<%=subcategory[i]._id %>" class="btn btn-warning">Edit</a></td>
+            <td><form action="/admin/subcategory/<%=subcategory[i]._id %>?_method=DELETE" method="post">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Do you wann Delete this SubCategory.')">Delete</button>
+                </form>
+            </td>
+            
+            
+        </tr>
+        <% } %> 
+    </tbody>
+</table>
+</div>
+<script type="text/javascript" charset="utf8"
+src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" charset="utf8"
+src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+<script>
+$(function () {
+    $("#categoryList").dataTable();
+});
+</script>
+

@@ -1,0 +1,79 @@
+<% layout('/layouts/newbp') %> 
+<div class="p-5 col-6">
+<h1>Create New Products</h1>
+<form action="/admin/products/new" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
+    <div class="mb-3">
+        <label class="form-label" for="productname">Product Name</label>
+        <input class="form-control" type="text" id="productname" name="productname" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="category">Category:</label>
+        <select class="form-control" name="category" id="categoryId"  required>
+            <% for(let cat of category){ %> 
+            <option value="<%=cat.category %>"><%=cat.category %></option>
+            <% } %> 
+        </select>
+        <!-- <input class="form-control" type="text" id="category" name="category" required> -->
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="subcategory">Sub Category:</label>
+        <div id="subcategoryId">  
+            <select id="subCategoryId" name="subcategory" class="form-control" required>
+                <option  disabled>Choose a category</option>
+            </select>
+        </div>
+
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="description">Description</label>
+        <input class="form-control" type="text" id="description" name="description" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="price">Price</label>
+        <input class="form-control" type="number" id="price" class="price" name="price" required>
+    </div>
+    <p class="span"></p>
+    <div class="mb-3">
+        <label class="form-label" for="stock">Stock</label>
+        <input class="form-control" type="number" id="stock" name="stock" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="image">Image</label>
+        <input class="form-control" type="file" name="image" id="image" multiple required>
+    </div>
+      
+    <!-- <div class="mb-3">
+        <label class="form-label" for="image">Image</label>
+        <input class="form-control" type="text" id="image" name="image" required>
+    </div> -->
+   
+    <button class="btn btn-primary" onclick="check()">Submit</button>
+</form>
+</div>
+<script>
+    const category = document.getElementById("categoryId");
+    category.addEventListener("change", function () {
+    let categoryId = category.value;
+
+    const subCategoryField = document.getElementById('subcategory');
+    let option = '';
+    fetch('/loadsubcategory', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ categoryId })
+    }).then(res => res.json()).then(data => {
+        let subCategory = data.subcategories;
+        if (subCategory.length > 0) {
+            option += `<select id="subCategoryId" name="subcategory" class="form-control">`;
+            subCategory.forEach((eachSubCategory) => {
+                option += `<option value="${eachSubCategory._id}">${eachSubCategory.subcategory}</option>`;
+            });
+            option += `</select>`;
+            subcategoryId.innerHTML = option;
+        } else {
+            subcategoryId.innerHTML = `<select id="subCategoryId" name="subcategory" class="form-control"><option  disabled>Choose..</option></select>`;
+        }
+
+    })
+    });
+</script>

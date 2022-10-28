@@ -1,0 +1,50 @@
+<% layout('/layouts/newbp') %> 
+<div class="p-5 m-5">
+    <div class="mb-5">
+        <a href="/admin/products/new" class="btn btn-primary">New Prodcuts</a>
+    </div>
+    <h3>
+        Current Products
+    </h3>
+    <table id="userList" class="display table table-secondary">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% for(let product of products){ %> 
+            <tr>
+                <td><a href="/admin/products/<%= product._id %>"><%= product.productname %></a> </td>
+                <td><%= product.category %> </td>
+                <td><%= product.price %> </td>
+                <td><a href="/admin/products/<%= product._id %>/update">Update</a></td>
+                <td><form action="/admin/products/<%= product._id %>?_method=DELETE" method="post" onclick="return confirm('Confirm to Delete')" > <button class="btn btn-danger" >Delete</button></form></td>
+            </tr>
+            <% } %> 
+        </tbody>
+    </table>
+</div>
+
+<!-- Button trigger modal -->
+
+  
+ 
+    <script>
+         const wantToDelete=()=>{
+
+        }
+    </script>
+    <script type="text/javascript" charset="utf8"
+    src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" charset="utf8"
+    src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+<script>
+    $(function () {
+        $("#userList").dataTable();
+    });
+</script>

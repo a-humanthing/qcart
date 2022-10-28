@@ -1,0 +1,21 @@
+<% layout('/layouts/boilerplate') %> 
+<div class="col-6 ">
+    <div class="card mb-3">
+        <%for(let img of product.image){ %> 
+          <img src="<%=img.url %>" class="card-img-top" alt="...">
+        <% } %> 
+        <div class="card-body">
+          <h5 class="card-title"><%= product.productname %></h5>
+          <p class="card-text text-muted"><%= product.category %></p>
+          <p class="card-text ">Posted by <%= product.price %></p>
+          <p class="card-text"><%= product.description %></p>
+          <form action="/product/cart/<%=product._id %>" method="post">
+            <button type="submit" class="btn btn-primary">Add to Cart</button>
+          </form>
+          <a href="/product/cart/<%=userId%>" class="mt-5 btn btn-primary">View Cart</a>
+        </div>
+      </div>
+     
+    
+    
+</div>

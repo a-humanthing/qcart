@@ -1,0 +1,17 @@
+<% layout('/layouts/newbp') %> 
+<div class="p-5">
+<div class="col-6 ">
+    <div class="card mb-3">
+        <img src="" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><%= user.username %></h5>
+          <p class="card-text text-muted">Email :<%= user.email %></p>
+          <p class="card-text ">Phone :<%= user.phone %></p>
+          <p class="card-text">Status :<%= user.status %></p>
+          <h6 class="text-muted">From: <%= user.createdAt %>/day </h6>
+         
+        </div>
+      </div>
+    
+</div>
+</div>

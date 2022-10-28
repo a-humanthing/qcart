@@ -1,0 +1,36 @@
+<% layout('/layouts/profilebp') %> 
+<div class="col-12 col-md-6  m-2 pt-4 card">
+    Edit ADDRESS
+<form action="/user/address/<%=address._id %>?_method=PUT" method="post" class="needs-validation" novalidate>
+    <div class="m-3 p-3">
+        <div class="m-3">
+            <input type="text" name="name" value="<%=address.name  %>" placeholder="Name" required>
+            <input type="number" name="mobile" value="<%=address.mobile %>" placeholder="10-digit mobile number" required class="mt-2">
+        </div>
+    
+        <div class="m-3">
+            <textarea name="address" value="" placeholder="Address(Area and Street)" id="address" cols="50" rows="5" required><%=address.address %></textarea>
+        </div>
+        <div class="m-3">
+            <input type="number" name="pincode" value="<%=address.pincode %>" placeholder="Pincode" required >
+        </div>
+        <div class="m-3">
+            <input type="text" name="cityDistrictTown" value="<%=address.cityDistrictTown %>" placeholder="District" required >
+            <input type="text" name="state" value="<%=address.state %>" placeholder="State" required class="mt-2">
+        </div>
+        <div class="m-3">
+            <input type="text" name="landmark" value="<%=address.landmark %>" placeholder="Landmark" >
+            <input type="number" name="alternatephone" value="<%=address.alternatephone %>"  placeholder="Alternate Phone" class="mt-2">
+        </div>
+        <div class="m-3">
+            Select: <input type="radio" name="addresstype" class="ms-3" value="home" checked>HOME
+            <input type="radio" name="addresstype" value="work" class="ms-3">WORK
+        </div>
+        <div class="m-3">
+            <button type="submit" class="btn btn-primary" >Update Changes</button>
+        </div>
+
+    </div>
+</form>
+
+</div>

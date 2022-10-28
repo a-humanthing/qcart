@@ -1,0 +1,36 @@
+<% layout('/layouts/profilebp') %> 
+<div class="col-12 col-md-6  m-2 pt-4 card">
+    ADD A NEW ADDRESS
+<form action="/user/new/address" method="post" class="needs-validation" novalidate>
+    <div class="m-3 p-3">
+        <div class="m-3">
+            <input type="text" name="name" placeholder="Name" required>
+            <input type="number" name="mobile" placeholder="10-digit mobile number" required class="mt-2">
+        </div>
+    
+        <div class="m-3">
+            <textarea name="address" placeholder="Address(Area and Street)" id="address" cols="50" rows="5" required></textarea>
+        </div>
+        <div class="m-3">
+            <input type="number" name="pincode" placeholder="Pincode" required >
+        </div>
+        <div class="m-3">
+            <input type="text" name="cityDistrictTown" placeholder="District" required >
+            <input type="text" name="state" placeholder="State" required class="mt-2">
+        </div>
+        <div class="m-3">
+            <input type="text" name="landmark" placeholder="Landmark" >
+            <input type="number" name="alternatephone" placeholder="Alternate Phone" class="mt-2">
+        </div>
+        <div class="m-3">
+            Select: <input type="radio" name="addresstype" class="ms-3" value="home" checked>HOME
+            <input type="radio" name="addresstype" value="work" class="ms-3">WORK
+        </div>
+        <div class="m-3">
+            <button type="submit" class="btn btn-primary" >ADD</button>
+        </div>
+
+    </div>
+</form>
+
+</div>

@@ -1,0 +1,45 @@
+<% layout('/layouts/newbp') %> 
+<div class="p-5 m-5">
+    <div class="mb-5">
+        <a href="/admin/banner/new" class="btn btn-primary">Add New Banner</a>
+    </div>
+    <h3>
+        Current Banners
+    </h3>
+    <table id="bannerList" class="display table table-secondary">
+        <thead>
+            <tr>
+                <th>Banner Name</th>
+                <th colspan="2" >Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% for(let banner of banners){ %> 
+            <tr>
+                <td><a href="/admin/banner/<%= banner._id %>"><%=banner.bannerName %> </a> </td>
+                <td><a href="/admin/banner/<%= banner._id %>/update">Update</a></td>
+                <td><form action="/admin/banner/<%= banner._id %>?_method=DELETE" method="post" onclick="return confirm('Confirm to Delete')" > <button class="btn btn-danger" >Delete</button></form></td>
+            </tr>
+            <% } %> 
+        </tbody>
+    </table>
+</div>
+
+<!-- Button trigger modal -->
+
+  
+ 
+    <script>
+         const wantToDelete=()=>{
+
+        }
+    </script>
+    <script type="text/javascript" charset="utf8"
+    src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" charset="utf8"
+    src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+<script>
+    $(function () {
+        $("#bannerList").dataTable();
+    });
+</script>

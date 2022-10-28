@@ -1,0 +1,50 @@
+<% layout('/layouts/newbp') %> 
+<div class="p-5 m-5">
+    <div class="mb-5">
+        <a href="/admin/coupon/new" class="btn btn-primary">Add New Coupon</a>
+    </div>
+    <h3>
+        Current Coupons
+    </h3>
+    <table id="userList" class="display table table-secondary">
+        <thead>
+            <tr>
+                <th>Coupon Code</th>
+                <th>Max Limit</th>
+                <th>Percentage</th>
+                <th>Expiry Date</th>
+                <th>Is Active</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% for(let coupon of coupons){ %> 
+            <tr>
+                <td><a href="/admin/coupon/<%= coupon._id %>"><%=coupon.code %> </a> </td>
+                <td><%= coupon.amount %> </td>
+                <td><%= coupon.percentage %> </td>
+                <td><a href="/admin/coupon/<%= coupon._id %>/update">Update</a></td>
+                <td><form action="/admin/coupon/<%= coupon._id %>?_method=DELETE" method="post" onclick="return confirm('Confirm to Delete')" > <button class="btn btn-danger" >Delete</button></form></td>
+            </tr>
+            <% } %> 
+        </tbody>
+    </table>
+</div>
+
+<!-- Button trigger modal -->
+
+  
+ 
+    <script>
+         const wantToDelete=()=>{
+
+        }
+    </script>
+    <script type="text/javascript" charset="utf8"
+    src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" charset="utf8"
+    src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+<script>
+    $(function () {
+        $("#userList").dataTable();
+    });
+</script>

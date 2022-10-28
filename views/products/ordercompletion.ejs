@@ -1,0 +1,98 @@
+<% layout('/layouts/userbp') %>
+<div class="100vmin p-5 ">
+    <div class="mb-4">
+        Your Orders
+    </div>
+
+    <% for(let o of order){ %> 
+        <div class="mb-5">
+            <h3> </h3>
+        </div>   
+       
+        <% for(let item of o.items){ %> 
+          
+
+                <div class="card mb-2 p-3">
+                  <div class="row ">
+                    <div class="col-md-3">
+                      <% for(let img of item.product.image){ %>
+                        <a href="/product/<%=item._id %>">
+                      <img
+                        class="img-fluid"
+                        width="100px"
+                        height="100px"
+                        src="<%= img.url %>"
+                        alt=""
+                      />
+                    </a>
+                      <% } %>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="card-body">
+                        <h5 class="card-title"><%= item.product.productname %></h5>
+                        <h6><%=item.product.category  %> </h6>
+                        <small class="text-muted"> <%= item.product.price %> </small>
+
+                        <div class="mb-3">
+                        
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-2">          
+                          <%=o.paymentStatus %> 
+                    </div>
+                    <div class="col-md-2">
+                        <%for(let status of o.orderStatus){  %> 
+                            <%=status.type %> 
+                        <% } %> 
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <b class="text-success"> Delivery On <%=o.expecteddate.toDateString() %> </b>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 p-2">
+                            
+                            <button type="submit" style="display: inline" class="btn btn-danger ms-2"  data-bs-toggle="modal" data-bs-target="#cancelorder<%=o._id %>">
+                              Cancel Order
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            Payable Amount:<%=o.bill  %> 
+                        </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
+                <!-- Modal have issues when deleting becase they are only triggered when we click cancel button -->
+                                    <!-- Modal -->
+<div class="modal fade" id="cancelorder<%=o._id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-success">
+          <h5 class="modal-title" id="exampleModalLabel">Do you want to Cancel This Order?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Click, Yes If you want to Cancel Order
+          <%= item.product.productname %>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">no,don't cancel</button>
+          <form action="/product/order/<%=o._id%>?_method=DELETE" class="d-inline p-0" method="post" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <button type="submit" class="btn btn-danger">Yes,Cancel</button>
+            </button>
+          </form>
+        
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- modalend -->
+            
+      <% } %> 
+            
+  <% } %> 
+
+</div>

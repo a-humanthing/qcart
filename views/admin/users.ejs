@@ -1,0 +1,41 @@
+<% layout('/layouts/newbp') %> 
+<div class="p-5">
+
+
+    <div class="ms-3">
+        <h3>
+            Current Users
+        </h3>
+    </div>
+    <table id="userList" class="display table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% for(let user of users){ %> 
+            <tr>
+                <td><a href="/admin/users/<%= user._id %>"><%= user.username %></a> </td>
+                <td><%= user.email %> </td>
+                <td><%= user.phone %> </td>
+                <td><a href="/admin/users/<%= user._id %>/update">Update</a></td>
+                <td><form action="/admin/users/<%= user._id %>?_method=DELETE" method="post" > <button class="btn btn-danger" onclick="return confirm('Do you want to delete <%= user.username%>?')">Delete</button></form></td>
+            </tr>
+            <% } %> 
+        </tbody>
+    </table>
+</div>
+    <script type="text/javascript" charset="utf8"
+    src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" charset="utf8"
+    src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+<script>
+    $(function () {
+        $("#userList").dataTable();
+    });
+</script>

@@ -1,0 +1,42 @@
+<% layout('/layouts/boilerplate') %> 
+<div>
+    <span class="h6"><%= id %></span> <span>(Showing out of <%= totalProducts %>)</span>
+</div>
+<div>
+    Sort by:<a class="sortKeys" href="">Popularity&nbsp;&nbsp;&nbsp;</a><a class="sortKeys" href="">Price--Low to High&nbsp;&nbsp;&nbsp;</a><a class="sortKeys" href="">Price--High to Low&nbsp;&nbsp;&nbsp;</a>
+</div>
+<hr>
+<% for(let item of catList) {%>
+<div>
+   
+    <div class="card mb-3" >
+        <div class="row">
+            <div class="col-md-4">
+                <% for(let img of item.image){ %> 
+                <img class="img-fluid" src="<%= img.url %>" alt="">
+                    <% } %> 
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <%= item.productname %> 
+                    </h5>
+                    <p class="card-text">
+                        <%= item.description %> 
+                    </p>
+                    <small class="text-muted">
+                        <%= item.price %> 
+                    </small>
+                    <div>
+                        <a class="btn btn-primary" href="/product/<%=item._id %>">
+                            View <%= item.productname %>
+                        </a>
+                    </div>
+                     
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>        
+    <% } %>  

@@ -1,0 +1,115 @@
+<% layout('/layouts/userbp') %>
+<div class="100vmin p-5 ">
+
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6 m-2 px-0 ">
+
+        <div class="row text-center">
+            <div class="col-12 ">
+                <h3>Complete Checkout Process</h3>
+            </div>
+        </div>
+
+        <div class="card bg-success shadow-sm mb-3 p-3">
+            <div class="row ">
+                <div class="col-6 fw-bold">
+                    1. Login
+                        <h5 class="ms-3"><%=username %> </h5>
+                        
+                </div>
+                <div class="col-3 m-auto">
+                    <button class="btn shadow btn-secondary ms-auto">Change</button> 
+                </div>
+            </div>
+        </div>
+        <div class="mb-3 p-3  shadow-sm card">
+            <div class="row ">
+                <div class="ps-2 col-12  pb-2 mb-3 border-bottom text-success fw-bold">
+                2. Delivery Address
+                </div>
+                <div class="col-8 pb-2  ">
+            
+                    <% let i=0; %> 
+        <form action="/product/selectaddress" method="post">
+            <% for(let add of address){ %> 
+            <div class="mb-3">
+                <input type="radio" name="selectaddress" value="<%=add._id %>"  checked id="<%=add._id %>">
+                <span class="btn btn-outline-secondary py-0"><%=add.addresstype %> </span>
+                <%=add.name %> 
+                <%=add.mobile %> <br>
+                <%=add.address %>
+                <%=add.cityDistrictTown %> 
+                <%=add.pincode %> 
+                
+            </div>
+            <% } %> 
+            <button class="btn btn-primary" type="submit">Deliver To This</button>
+        </form>
+            </div>
+            </div>
+        </div>
+        <div class="mb-3 p-3 shadow-sm card">
+            <div class="row">
+                <div class="ps-2 col-12 pb-2 ">
+                <i class="fa fa-plus"></i><a class=" text-decoration-none " href="/user/new/address"> ADD A NEW ADDRESS</a>
+            </div>
+            </div>
+        </div>
+        <div class="mb-3 shadow-sm p-2 card text-success fw-bold">
+           3. Order Summary
+        </div>
+        <div class="mb-3 shadow-sm p-2 card text-success fw-bold">
+           4. Payment Options
+        </div>
+    </div>
+    <div class="col-12 col-md-3 m-2 py-2 card" style="height: 15vmax;">
+            <div class="border-bottom mb-3">
+                    <h5 class="ms-1 text-secondary text-success mt-2">Price Details </h5>
+                    
+            </div>
+            <div class="row mb-3">
+                <div class="col-6 ">
+                    Price(<%=quantity %> item)
+                </div>
+                <div class="col-6 ">
+                    <%=totalPrice %> 
+                </div>
+            </div>
+            <%if(checkoutType==='single'){%> 
+            <div class="row mb-3">
+                <div class="col-6 ">
+                    Offer Price(coupon):
+                </div>
+                <div class="col-6 ">
+                    <%=offerPrice %> 
+                </div>
+            </div>
+            <% } %> 
+    
+            <div class="row mb-3">
+                <div class="col-6 ">
+                    Delivery Charges
+                </div>
+                <div class="col-6 ">
+                    <%=deliveryCharge %> 
+                </div>
+            </div>
+            <div class="row  border-bottom mb-3">
+                <div class="col-6 ">
+                    Packing Charges
+                </div>
+                <div class="col-6 ">
+                    <%=packagingCharge %> 
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-6 ">
+                    Total Payable
+                </div>
+                <div class="col-6 ">
+                    <%=total %> 
+                </div>
+            </div>
+    </div>
+  </div>
+</div>

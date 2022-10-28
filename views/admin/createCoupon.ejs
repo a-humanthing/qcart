@@ -1,0 +1,50 @@
+<% layout('/layouts/newbp') %> 
+<div class="p-5 m-5">
+    <div class="mb-5">
+        <h1>Create New Coupon Code</h1>
+    </div>
+    <form action="/admin/coupon/new" method="post">
+        <div class="mb-3">
+            <input type="text" class="form-control" name="code" placeholder="Enter Coupon Code" id="code" onblur="this.value.to" style="text-transform:uppercase" required >
+
+        </div>
+        <label for="isPercent">Is Percent</label>
+        <div class="mb-3 ms-4 form-check">
+            <!-- <label for="isPercent">Is Percent</label> -->
+            <input type="radio" class="form-check-input" value="true" name="isPercent" id="percentTrue" onclick="hideInput()" checked required >
+                <label for="percentTrue" class="form-check-label">True</label>
+            <input type="radio" class="form-check-input" value="false" name="isPercent" id="percentFalse" onclick="hideInput()" required >
+            <label for="percentFalse" class="form-check-label">False</label>
+        </div>
+        <div class="mb-3" id="percentbox" >
+            <input type="number" class="form-control" placeholder="Enter percentage" name="percentage" id="percentage"  >
+        </div>
+        <div class="mb-3">
+            <input type="number" class="form-control" placeholder="Enter max limit" name="amount" id="amount" required >
+        </div>
+        <div class="mb-3">
+            <input type="date" class="form-control" name="expiryDate" id="expiryDate" required >
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+        
+    </form>
+</div>
+
+<script>
+    
+
+    function hideInput(){
+        
+    
+    if(document.getElementById('percentFalse').checked){
+        document.getElementById('percentbox').style.display='none';
+        document.getElementById('percentage').disabled=true;
+    }else{
+        document.getElementById('percentbox').style.display='block';
+    }
+}
+
+
+</script>

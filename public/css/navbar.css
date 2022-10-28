@@ -1,0 +1,45 @@
+.navbar{
+    background-color:#AF6EBA ;
+    
+}
+footer{
+    background-color:#AF6EBA ;   
+}
+.searchBar{
+    height: 2rem;
+    border-radius: .5em;
+    border-width: 1px;
+    border-color: #F8F8F8;
+}
+.navButtons{
+    display: inline;
+    
+}
+.categoryBar{
+    display: flex;
+    justify-content: center;
+    column-gap: 5rem;
+    min-height: 45px;
+    max-height: 45px;
+    padding: 0;
+    margin: 0;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+::-webkit-scrollbar {
+    display: none;
+}
+.inline{
+    background-color: #F2F2F2;
+    height: 2.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+
+    border-radius: 40px;
+    border-width: 1px;
+    border-color: #F8F8F8;
+}
+.inline:active{
+    background-color: #AF6EBA;
+}

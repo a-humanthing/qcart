@@ -1,0 +1,23 @@
+
+<nav class="navbar sticky-top navbar-expand-lg  py-3">
+    <div class="container-fluid">
+      
+        <div class="col-6 offset-3">
+          <a class="navbar-brand text-white p-0 m-0 shadow" href="#">Qcart</a><img class="" src="/image/icon.png" alt="">
+          <input type="text" class="searchBar shadow" placeholder="search">
+  
+        </div>
+       <% if(currentUser){%>  
+        <div>
+          <ul class="navbar-nav ms-auto">
+          
+            <li class="nav-item"><a href="/user/logout" class="nav-link btn primaryButton ms-auto">ULogout</a></li>
+          </ul>
+        </div>
+        <% } %> 
+      
+      
+      
+    </div>
+  </nav>
+  

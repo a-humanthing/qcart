@@ -1,0 +1,65 @@
+<% layout('/layouts/profilebp') %>
+
+
+
+<div class="col-12 col-md-6 m-2 card">
+  Manage Address
+  <div class="m-5 p-3 border">
+    <i class="fa fa-plus"></i><a href="/user/new/address">ADD A NEW ADDRESS</a>
+  </div>
+  <div class="m-5 p-3 border">
+    <table >
+        <% for(let item of address){ %> 
+        <tr class="border-bottom" >
+            <td class="p-3">
+                <button disabled="disabled" class="btn btn-sm btn-secondary">
+                    <%=item.addresstype %>
+                  </button>
+                  <%=item.mobile %> <%=item.name %> <br />
+                  <%=item.address %> <%=item.picode %> <%=item.cityDistrictTown %>
+                  <%=item.landmark %>
+                  <%=item.pincode  %> 
+            </td>
+            <td>
+                <div >
+                <a href="/user/address/<%=item._id %>" class="align-middle float-end "><i class=" fa fa-edit"></i></a>
+                </div>
+                   <div>
+                       <button type="submit" id="delete_address " class="align-middle btn btn-light " data-bs-toggle="modal" data-bs-target="#exampleModal">
+                           <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+            </td>
+    
+        </tr>
+
+        <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-success">
+          <h5 class="modal-title" id="exampleModalLabel">Do you want to Delete Address?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Click, Yes If you want to Delete Address
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">no,don't delete</button>
+          <form action="/user/address/<%=item._id%>?_method=DELETE " class="d-inline p-0" method="post" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <button type="submit" class="btn btn-danger">Yes,Delete</button>
+            </button>
+          </form>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- modalend -->
+
+        <% } %> 
+    </table>
+  </div>
+</div>
+
+

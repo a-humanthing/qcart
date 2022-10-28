@@ -1,0 +1,37 @@
+<% layout('/layouts/newbp') %> 
+<div class="p-5">
+<h1>Edit Products</h1>
+<form action="/admin/products/<%= product._id %>/update?_method=PUT" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
+    <div class="mb-3">
+        <label class="form-label" for="productname">Product Name</label>
+        <input class="form-control" type="text" id="productname" value="<%= product.productname %>" name="productname" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="category">Category</label>
+        <input class="form-control" type="text" id="category" name="category" value="<%= product.category %>" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="description">Description</label>
+        <input class="form-control" type="text" id="description" name="description" value="<%= product.description %>" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="price">Price</label>
+        <input class="form-control" type="number" id="price" class="price" name="price" value="<%= product.price %>" required>
+    </div>
+    <p class="span"></p>
+    <div class="mb-3">
+        <label class="form-label" for="quantity">Quantity</label>
+        <input class="form-control" type="number" id="quantity" name="quantity" value="<%= product.quantity %>" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="stock">Stock</label>
+        <input class="form-control" type="number" id="stock" name="stock" value="<%= product.stock %>" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="image">Image</label>
+        <input type="file" id="image" name="image" multiple>
+    </div>
+   
+    <button class="btn btn-primary" onclick="check()">Submit</button>
+</form>
+</div>

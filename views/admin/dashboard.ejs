@@ -1,0 +1,224 @@
+<% layout('/layouts/newbp') %> 
+<%- include('../partials/adminWelcome') %>
+<div class="container-fluid p-5">
+<section>
+    <div class="dashboard">
+
+        <div class="row">
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card tale-bg">
+                <div class="card-people mt-auto">
+                  <img src="images/dashboard/people.svg" alt="people">
+                  <div class="weather-info">
+                    <div class="d-flex">
+                      <div>
+                        <h2 class="mb-0 font-weight-normal"><i class="icon-sun mr-2"></i>31<sup>C</sup></h2>
+                      </div>
+                      <div class="ml-2">
+                        <h4 class="location font-weight-normal"></h4>
+                        <h6 class="font-weight-normal">India</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 grid-margin transparent">
+              <div class="row">
+                <div class="col-md-6 mb-4 stretch-card transparent">
+                  <div class="card card-tale">
+                    <div class="card-body">
+                      <p class="mb-4">Today’s Orders</p>
+                      <p class="fs-30 mb-2"><%=todaysOrders %> </p>
+                      <p></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4 stretch-card transparent">
+                  <div class="card card-dark-blue">
+                    <div class="card-body">
+                      <p class="mb-4">Months Orders</p>
+                      <p class="fs-30 mb-2"><%=monthsOrders %> </p>
+                      <p></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
+                  <div class="card card-light-blue">
+                    <div class="card-body">
+                      <p class="mb-4">Number of Customers</p>
+                      <p class="fs-30 mb-2"><%= totalUsers %></p>
+                      <p></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 stretch-card transparent">
+                  <div class="card card-light-danger">
+                    <div class="card-body">
+                      <p class="mb-4">Number of Products</p>
+                      <p class="fs-30 mb-2"><%= totalProducts %></p>
+                      <p></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <p class="card-title">Order Details</p>
+                  <p class="font-weight-500">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
+                  <div class="d-flex flex-wrap mb-5">
+                    <div class="mr-5 mt-3">
+                      <p class="text-muted">Sale Revenue</p>
+                      <h3 class="text-primary fs-30 font-weight-medium"><%=totalRevenue %></h3>
+                    </div>
+                    <div class="mr-5 mt-3">
+                      <p class="text-muted">Orders</p>
+                      <h3 class="text-primary fs-30 font-weight-medium"><%=totalOrders %> </h3>
+                    </div>
+                    <div class="mr-5 mt-3">
+                      <p class="text-muted">Users</p>
+                      <h3 class="text-primary fs-30 font-weight-medium"><%= totalUsers %></h3>
+                    </div>
+                    <div class="mt-3">
+                      <p class="text-muted">Products</p>
+                      <h3 class="text-primary fs-30 font-weight-medium"><%= totalProducts %></h3>
+                    </div> 
+                  </div>
+                  <canvas id="myChart"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                 <div class="d-flex justify-content-between">
+                  <p class="card-title">Sales Report</p>
+                  <a href="#" class="text-info">View all</a>
+                 </div>
+                  <p class="font-weight-500">See Which Payment Method is used by the most of the User And Plan According to this.</p>
+                  <div id="sales-legend" class="chartjs-legend mt-4 mb-2"></div>
+                  <canvas id="bar"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        
+    </div>
+    
+    
+
+</section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+   
+
+    getDailySale().then(data=>{
+        console.log('result=',data);
+    }).catch(error=>{
+        console.log('errork',error);
+    })
+    let dat;
+    let daySale;
+    async function getDailySale(){
+        const lastWeekSale =await fetch('/admin/dashboard/weeksale');
+        dat = await lastWeekSale.json();
+        console.log('dat',dat)
+        const labels = [];
+        const sales=[];
+        dat.forEach(element=>{
+            labels.push(element._id)
+            sales.push(element.sale);
+        })
+        //console.log('data=',typeof daySale)
+        //await lastWeekSale.json()
+     
+        //console.log('la',labels)
+        
+        const data = {
+        labels: labels,
+        datasets: [{
+            label: 'Sale Revenue From Each day',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: sales,
+        }]
+        };
+    
+        const config = {
+        type: 'line',
+        data: data,
+        options: {}
+        };
+
+        const myChart = new Chart(
+        document.getElementById('myChart'),
+        config
+        );
+}
+
+    comparePayMethods().then(resolved=>{
+        console.log('resolved',resolved);
+    }).catch(err=>{
+        console.log('error',err)
+    })
+    let cmpdata;
+    async function comparePayMethods(){
+        const cmpmethod= await fetch('/admin/dashboard/comparemethod');
+        cmpdata = await cmpmethod.json();
+        const cash = cmpdata.bycod;
+        const epay = cmpdata.byonline;
+        const labels = [];
+        const cod=[];
+        const online=[];
+        cash.forEach(element=>{
+            labels.push(element._id)
+            cod.push(element.cod)
+        })
+        epay.forEach(element=>{
+            online.push(element.cod);
+        })
+        console.log('c',cash)
+
+        const data = {
+        labels: labels,
+        datasets: [{
+            label: 'Order by COD',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: cod,
+        },
+        {
+            label: 'Order by Online',
+            backgroundColor: 'rgb(25, 99, 132)',
+            borderColor: 'rgb(25, 99, 132)',
+            data: online,
+        }]
+        };
+    
+        const config = {
+        type: 'bar',
+        data: data,
+        options: {}
+        };
+
+        const myBar = new Chart(
+        document.getElementById('bar'),
+        config
+        );
+    }
+</script>
+
+  
+  
+

@@ -1,0 +1,8 @@
+<% layout('/layouts/newbp') %> 
+<div class="p-5">
+<form action="/admin/subcategory/<%=subcategories._id%>?_method=PUT" method="post" class="needs-validation" novalidate>
+    <label for="subcategory">Edit Sub Category:</label>
+    <input type="text" value="<%=subcategories.subcategory %>" name="subcategory" id="subcategory" required>
+    <button class="btn btn-primary">Submit</button>
+</form>
+</div>

@@ -1,0 +1,40 @@
+
+<% layout('/layouts/userbp') %> 
+<section>
+    <div class="userRegister col-6 offset-3  mb-5 shadow container">
+        <div class="m-5 p-5">
+        <h1>Register</h1>
+        <form action="/user/register" method="post" id="Myform" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label class="form-label" for="username">Username:</label>
+                <input class="form-control" type="text" id="username"  name="username" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="email">Email:</label>
+                <input class="form-control" type="email" id="email" name="email" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="phone">Phone:</label>
+                <input class="form-control" type="number" id="phone" name="phone" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="password">Password:</label>
+                <input class="form-control" type="password" id="password" class="password" name="password" required>
+            </div>
+            <p class="span"></p>
+            <div class="mb-3">
+                <label class="form-label" for="cpassword">Confirm Password:</label>
+                <input class="form-control" type="password" id="cpassword" name="cpassword" required>
+                <p class="logCheck"><a href="/user/login">already have an account?log in</a></p>
+
+            </div>
+        
+            <button class="btn btn-primary" onclick="check()">Submit</button>
+        </form>
+        </div>
+    </div>
+
+</section>
+
+
+

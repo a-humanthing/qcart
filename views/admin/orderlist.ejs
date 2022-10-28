@@ -1,0 +1,47 @@
+<% layout('/layouts/newbp') %> 
+<div class="p-5 m-5">
+    <h3>
+        Orders
+    </h3>
+    <table id="orderList" class="display table table-secondary">
+        <thead>
+            <tr>
+                <th>Order id</th>
+                <th>User</th>
+                <th>Bill</th>
+                <th>Pay Status</th>
+                <th>Order Status</th>
+                <th>Pay Type</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% for(let order of orders){ %> 
+            <tr>
+                <td><a href="/admin/order/<%= order._id %>"><%=order._id %></a> </td>
+                <td><%=order.user.username %></td>
+                <td><%= order.bill %> </td>
+                <td><%= order.paymentStatus %></td>
+                <td><% for(let type of order.orderStatus){ %>
+                    <%= type.type %> 
+                    <% } %> 
+                </td>
+                <td><%=order.paymentType %></td>
+            </tr>
+            <% } %> 
+        </tbody>
+    </table>
+</div>
+
+<!-- Button trigger modal -->
+
+  
+ 
+    <script type="text/javascript" charset="utf8"
+    src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" charset="utf8"
+    src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+<script>
+    $(function () {
+        $("#orderList").dataTable();
+    });
+</script>

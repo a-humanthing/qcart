@@ -1,0 +1,31 @@
+<% layout('/layouts/newbp') %> 
+<div class="p-5">
+<table id="categoryList" class="display table table-secondary">
+    <thead>
+        <tr>
+            <th> Number </th>
+            <th>Category</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+    <% for(let i=0;i<categories.length;i++){ %> 
+        <tr>
+           
+            <td><%= i+1 %> </td>
+            <td><%= categories[i].category %> </td>
+            
+        </tr>
+        <% } %> 
+    </tbody>
+</table>
+</div>
+<script type="text/javascript" charset="utf8"
+src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" charset="utf8"
+src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+<script>
+$(function () {
+    $("#categoryList").dataTable();
+});
+</script>
