@@ -276,13 +276,14 @@ router.get("/checkout", isLoggedIn, async (req, res, next) => {
   const quantity = cartFull.cartItem.length;
   const totalPrice = cartFull.bill;
   const deliveryCharge = 0;
-  const packagingCharge = 399;
+  const packagingCharge = 399; 
   const total = totalPrice + deliveryCharge + packagingCharge;
   const checkout = await Checkout.create({
     user: user,
     items: items,
     bill: total,
   });
+
   const checkoutid = checkout._id;
   req.session.checkoutid = checkoutid;
   console.log("cartcheck ==", checkout);
@@ -327,6 +328,8 @@ router.get('/checkout/:id',async(req,res,next)=>{
   const {id} = req.params;
   const user = req.session.user;
   const checkid = req.session.checkoutid;
+  req.session.checkoutType = "single";
+  res.locals.checkoutType = req.session.checkoutType;
   let offerPrice;
   let total;
   const checkout = await Checkout.find({_id:checkid}).populate({path: "items",
@@ -493,7 +496,9 @@ router.get("/payment", async (req, res) => {
      //totalPrice = checkitems.items[0].price;
   }
   else{
-     totalPrice = bill;
+    // totalPrice = bill;
+    total = totalPrice + deliveryCharge + packagingCharge;
+
   }
   //const offerPrice= checkitems.items[0].discountPrize;
  
