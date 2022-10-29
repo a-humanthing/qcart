@@ -16,11 +16,17 @@ const Checkout = require("../model/checkout");
 const Order = require("../model/order");
 const Coupon = require('../model/coupon')
 const { compileFunction } = require("vm");
+const couponController = require("../controller/product/coupon");
 router.use(methodOverride("_method"));
 
 router.get("/cart", isLoggedIn, async (req, res, next) => {
   const id = req.user._id;
+  req.session.discountAmount=false;
+  req.session.discountTotal=false;
+  req.session.couponApplied=false;
+  res.locals.userid = req.session.user;
   try {
+    res.locals.couponApplied=  req.session.couponApplied
     const cartFull = await Cart.findOne({ user: id }).populate({
       path: "user",
       path: "cartItem",
@@ -28,9 +34,10 @@ router.get("/cart", isLoggedIn, async (req, res, next) => {
     });
     const cart = cartFull.cartItem;
     res.locals.cartcount = cart.length;
+    const totalAmount = cartFull.bill;
     // console.log(cartFull);
     // console.log('cart number=',cart.length);
-    res.render("products/cart", { cart, cartFull });
+    res.render("products/cart", { cart, cartFull,totalAmount });
   } catch (error) {
     next(error);
   }
@@ -38,18 +45,21 @@ router.get("/cart", isLoggedIn, async (req, res, next) => {
 
 router.get("/cart/:id", isLoggedIn, async (req, res, next) => {
   const id = req.user._id;
+  res.locals.userid = req.session.user;
   try {
+    res.locals.couponApplied=  req.session.couponApplied
     const cartFull = await Cart.findOne({ user: id }).populate({
       path: "user",
       path: "cartItem",
       populate: { path: "product" },
     });
     const cart = cartFull.cartItem;
+    const totalAmount = cartFull.bill;
     req.session.cartcount = cart.length;
     // console.log(cartFull);
     // console.log('cart==',cart);
     // console.log('cartfull--',cartFull)
-    res.render("products/cart", { cart, cartFull });
+    res.render("products/cart", { cart, cartFull,totalAmount });
   } catch (error) {
     next(error);
   }
@@ -58,6 +68,7 @@ router.get("/cart/:id", isLoggedIn, async (req, res, next) => {
 //add cart
 router.post("/cart/:id", isLoggedIn, async (req, res, next) => {
   const { id } = req.params;
+  res.locals.userid = req.session.user;
 
   //userId may be changed to user
   const user = req.user._id;
@@ -138,7 +149,7 @@ router.post("/reduceqty", async (req, res, next) => {
   );
 
   // updating bill after reducing
-
+ 
   console.log("=====proid=", proid);
   let cart = await Cart.findOne({ user: user1 });
   console.log("cart===", cart);
@@ -163,7 +174,8 @@ router.post("/reduceqty", async (req, res, next) => {
     cart = await cart.save();
   }
   console.log("rdcqty==", reduceqty);
-  res.redirect("/product/checkout");
+  res.json({success:true})
+  //res.redirect("/product/checkout");
 });
 router.delete("/cart/:id", isLoggedIn, async (req, res, next) => {
   const user = req.user._id;
@@ -265,6 +277,8 @@ router.get("/checkout", isLoggedIn, async (req, res, next) => {
   res.locals.username = req.session.username;
   req.session.checkoutType = "cart";
   res.locals.checkoutType= req.session.checkoutType;
+  res.locals.couponApplied=  req.session.couponApplied;
+  res.locals.discountPrize=req.session.discountAmount
   console.log('hits checkout-------');
   //req.session.itemid=id;
   const cartFull = await Cart.findOne({ user }).populate({
@@ -275,16 +289,26 @@ router.get("/checkout", isLoggedIn, async (req, res, next) => {
   const items = cartFull.cartItem.slice();
   const quantity = cartFull.cartItem.length;
   const totalPrice = cartFull.bill;
-  const deliveryCharge = 0;
-  const packagingCharge = 399; 
-  const total = totalPrice + deliveryCharge + packagingCharge;
-  const checkout = await Checkout.create({
-    user: user,
-    items: items,
-    bill: total,
-  });
+  let checkout;
+  if(req.session.discountAmount){
+    console.log('discount',req.session.discountAmount)
+     checkout = await Checkout.create({
+      user: user,
+      items: items,
+      bill: req.session.discountTotal
+    });
+  }
+  else{
 
+     checkout = await Checkout.create({
+      user: user,
+      items: items,
+      bill: totalPrice,
+    });
+  }
   const checkoutid = checkout._id;
+  const thischeckout = await Checkout.findById(checkoutid);
+  const total = thischeckout.bill
   req.session.checkoutid = checkoutid;
   console.log("cartcheck ==", checkout);
   const useraddress = await Useraddress.findOne({ user }).populate("address");
@@ -292,17 +316,16 @@ router.get("/checkout", isLoggedIn, async (req, res, next) => {
   // console.log(useraddress)
   res.render("products/checkout", {
     totalPrice,
-    deliveryCharge,
-    packagingCharge,
     quantity,
-    total,
     address,
+    total
   });
 });
 router.post("/checkout", isLoggedIn, async (req, res, next) => {
   const user = req.session.user;
   const { id,offerPrice } = req.body;
-  console.log(offerPrice)
+  console.log(id)
+  //console.log(offerPrice)
   req.session.checkoutType = "single";
   res.locals.checkoutType= req.session.checkoutType;
   req.session.itemid = id;
@@ -310,13 +333,11 @@ router.post("/checkout", isLoggedIn, async (req, res, next) => {
   const product = pro._id;
   const price = pro.price;
   const quantity = 1; //should take it dynamically
-  const deliveryCharge = 0;
-  const packagingCharge = 29;
   const checkout = await Checkout.create({
     user: user,
     
     items: [{ product, quantity, price ,discountPrize:offerPrice,}],
-    bill: quantity * price + deliveryCharge + packagingCharge,
+    bill: quantity * price ,
   });
   const checkoutid = checkout._id;
   req.session.checkoutid = checkoutid;
@@ -330,7 +351,8 @@ router.get('/checkout/:id',async(req,res,next)=>{
   const checkid = req.session.checkoutid;
   req.session.checkoutType = "single";
   res.locals.checkoutType = req.session.checkoutType;
-  let offerPrice;
+  res.locals.couponApplied=  req.session.couponApplied
+  //let offerPrice;
   let total;
   const checkout = await Checkout.find({_id:checkid}).populate({path: "items",
   populate: { path: "product" }});
@@ -339,31 +361,28 @@ router.get('/checkout/:id',async(req,res,next)=>{
   const address = useraddress.address;
   console.log('itemsss=',checkout[0].items.length)
   res.locals.username = req.session.username;
-  const deliveryCharge = 0;
-  const packagingCharge = 29;
+
   const quantity =1;
   const totalPrice = checkout[0].items[0].price;
-  offerPrice = checkout[0].items[0].discountPrize;
-  if(typeof offerPrice ==='undefined'){
-     offerPrice=0
-     console.log('offprice',offerPrice);
-      total = totalPrice + deliveryCharge + packagingCharge;
-  }else{
+  //offerPrice = checkout[0].items[0].discountPrize;
+  //if(typeof offerPrice ==='undefined'){
+    // offerPrice=0
+     //console.log('offprice',offerPrice);
+      total = totalPrice ;
+  // }else{
 
-    offerPrice = checkout[0].items[0].discountPrize;
-    console.log('offprice',offerPrice);
-    total = offerPrice + deliveryCharge + packagingCharge;
-  }
+  //   offerPrice = checkout[0].items[0].discountPrize;
+  //   console.log('offprice',offerPrice);
+  //   total = offerPrice + deliveryCharge + packagingCharge;
+  // }
  
 
   res.render("products/checkout", {
     totalPrice,
-    deliveryCharge,
-    packagingCharge,
     quantity,
     total,
     address,
-    offerPrice
+    //offerPrice
   });
 })
 router.post("/selectaddress", async (req, res, next) => {
@@ -384,6 +403,9 @@ router.get("/ordersummary", async (req, res, next) => {
   const selectaddress = req.session.deliveryaddress;
   const checkid = req.session.checkoutid;
 
+  res.locals.couponApplied=  req.session.couponApplied;
+  res.locals.discountPrize=req.session.discountAmount
+
   console.log("type:", req.session.checkoutType);
 
   if (req.session.checkoutType === "single") {
@@ -392,42 +414,26 @@ router.get("/ordersummary", async (req, res, next) => {
     const id = req.session.itemid;
     res.locals.username = req.session.username;
 
+    
+    res.locals.checkoutType= req.session.checkoutType;
+
     const checkitems = await Checkout.findById({ _id: checkid });
     //const item = checkitems.items.slice();
     const bill = checkitems.bill;
     const quantity = checkitems.items.length;
     const totalPrice = checkitems.items[0].price;
-    const deliveryCharge = 0;
-    const packagingCharge = 29;
-    //const total = bill ;
-    let offerPrice;
     let total;
-    offerPrice = checkitems.items[0].discountPrize;
-    if(typeof offerPrice ==='undefined'){
-       offerPrice=0
-       console.log('offprice',offerPrice);
-        total = totalPrice + deliveryCharge + packagingCharge;
-    }else{
-  
-      offerPrice = checkitems.items[0].discountPrize;
-      console.log('offprice',offerPrice);
-      total = offerPrice + deliveryCharge + packagingCharge;
-    }
-   
-
-     const item = await Product.findById(id);
-
+    total = totalPrice ;
+    const item = await Product.findById(id);
     const deliveryaddress = await Address.findOne({ _id: selectaddress });
     console.log("Delivery ===", deliveryaddress);
     return res.render("products/ordersummary", {
       item,
       totalPrice,
-      deliveryCharge,
-      packagingCharge,
       quantity,
       total,
       deliveryaddress,
-      offerPrice
+      //offerPrice
     });
   } else {
     const cartFull = await Cart.findOne({ user }).populate({
@@ -435,20 +441,19 @@ router.get("/ordersummary", async (req, res, next) => {
       path: "cartItem",
       populate: { path: "product" },
     });
+    res.locals.checkoutType= req.session.checkoutType;
     const items = cartFull.cartItem;
     console.log("cartitems======", items);
     const quantity = cartFull.cartItem.length;
     const totalPrice = cartFull.bill;
-    const deliveryCharge = 0;
-    const packagingCharge = 399;
-    const total = totalPrice + deliveryCharge + packagingCharge;
+    const checkoutid=  req.session.checkoutid
+    const thischeckout = await Checkout.findById(checkoutid);
+    const total = thischeckout.bill;
     const deliveryaddress = await Address.findOne({ _id: selectaddress });
     console.log("Delivery ===", deliveryaddress);
     res.render("products/ordersummarycart", {
       items,
       totalPrice,
-      deliveryCharge,
-      packagingCharge,
       quantity,
       total,
       deliveryaddress,
@@ -461,6 +466,9 @@ router.get("/payment", async (req, res) => {
   const checkid = req.session.checkoutid;
   const selectaddress = req.session.deliveryaddress;
   //req.session.checkoutType = "single";
+  res.locals.checkoutType= req.session.checkoutType;
+  res.locals.couponApplied=  req.session.couponApplied;
+  res.locals.discountPrize=req.session.discountAmount
   const useraddress = await Useraddress.findOne({ user }).populate("address");
   const address = useraddress.address;
   res.locals.username = req.session.username;
@@ -468,52 +476,43 @@ router.get("/payment", async (req, res) => {
   const checkitems = await Checkout.findById({ _id: checkid });
   const item = checkitems.items.slice();
   const bill = checkitems.bill;
+  let quantity;
   let totalPrice;
-  let offerPrice;
+  //let offerPrice;
   let total;
-  totalPrice = checkitems.items[0].price;
-  const quantity = checkitems.items.length;
-  const deliveryCharge = 0;
-  const packagingCharge = 29;
+
+
 
   if (req.session.checkoutType === "single") {
-
-    //coupon test code
-
+        quantity=checkitems.items.length;
+        totalPrice = checkitems.items[0].price;
    
-    offerPrice = checkitems.items[0].discountPrize;
-    if(typeof offerPrice ==='undefined'){
-       offerPrice=0
-       console.log('offprice',offerPrice);
-        total = totalPrice + deliveryCharge + packagingCharge;
-    }else{
-  
-      offerPrice = checkitems.items[0].discountPrize;
-      console.log('offprice',offerPrice);
-      total = offerPrice + deliveryCharge + packagingCharge;
-    }
-
-     //totalPrice = checkitems.items[0].price;
+        total = totalPrice ;
+ 
   }
   else{
-    // totalPrice = bill;
-    total = totalPrice + deliveryCharge + packagingCharge;
+
+    const cartFull = await Cart.findOne({ user }).populate({
+      path: "user",
+      path: "cartItem",
+      populate: { path: "product" },
+    });
+    const items = cartFull.cartItem;
+    quantity=cartFull.cartItem.length;
+    console.log("cartitems======", items);
+    totalPrice = cartFull.bill;
+    total = bill ;
 
   }
-  //const offerPrice= checkitems.items[0].discountPrize;
- 
-  //total = totalPrice + deliveryCharge + packagingCharge;
 
   res.render("products/payment", {
     totalPrice,
-    deliveryCharge,
-    packagingCharge,
     quantity,
     total,
     address,
     deliveryaddress,
-    item,
-    offerPrice
+    item
+    //offerPrice
   });
 });
 
@@ -533,14 +532,12 @@ router.post("/order", async (req, res) => {
   totalPrice = checkout.items[0].price;
 
   const quantity = checkout.items.length;
-  const deliveryCharge = 0;
-  const packagingCharge = 29;
   let order;
-  offerPrice = checkout.items[0].discountPrize;
-    if(typeof offerPrice ==='undefined'){
-       offerPrice=0
-       console.log('offprice',offerPrice);
-        total = totalPrice + deliveryCharge + packagingCharge;
+  // offerPrice = checkout.items[0].discountPrize;
+  //   if(typeof offerPrice ==='undefined'){
+  //      offerPrice=0
+  //      console.log('offprice',offerPrice);
+        total = totalPrice ;
          order = await Order.create({
           user: user,
           items: items,
@@ -551,24 +548,23 @@ router.post("/order", async (req, res) => {
           paymentType: paymethod,
           orderStatus: [{ type: "ordered", date: new Date() }],
         });
-    }else{
+    // }else{
   
-      offerPrice = checkout.items[0].discountPrize;
-      console.log('offprice',offerPrice);
-      total = offerPrice + deliveryCharge + packagingCharge;
+    //   offerPrice = checkout.items[0].discountPrize;
+    //   console.log('offprice',offerPrice);
+    //   total = offerPrice + deliveryCharge + packagingCharge;
 
-       order = await Order.create({
-        user: user,
-        items: items,
-        checkoutid: checkid,
-        bill: total,
-        address: addressid,
-        paymentStatus: "pending",
-        paymentType: paymethod,
-        orderStatus: [{ type: "ordered", date: new Date() }],
-      });
+    //    order = await Order.create({
+    //     user: user,
+    //     items: items,
+    //     checkoutid: checkid,
+    //     bill: total,
+    //     address: addressid,
+    //     paymentStatus: "pending",
+    //     paymentType: paymethod,
+    //     orderStatus: [{ type: "ordered", date: new Date() }],
+    //   });
 
-    }
     console.log('last total',total)
     
   req.session.orderid = order._id;
@@ -645,19 +641,21 @@ router.get("/ordercompletion", async (req, res) => {
     path: "items",
     populate: { path: "product" },
   }).sort({createdAt:-1});
+  const orderquantity = await Order.aggregate([{$match:{user:mongoose.Types.ObjectId(user)}},{$project:{sum:{$sum:'$items.quantity'}}}])
+  console.log('qty',orderquantity);
   console.log("address==", order.address);
   console.log('order=',order)
   const product = order.items;
   
-  res.render("products/ordercompletion", { order });
+  res.render("products/ordercompletion", { order,orderquantity });
 });
 
 router.post('/coupon',async(req,res,next)=>{
   console.log(req.body);
-  const {code,proid} = req.body;
+  const {code,userid} = req.body;
   const user = req.session.user;
   const ucode =code.toUpperCase();
-  const checkcode = await Coupon.aggregate([{$match:{code:ucode}}])
+  const checkcode = await Coupon.findOne({code:ucode})
   //checkcode[0].customers.push({customers:user})
   //const updateCust = await Coupon.findOneAndUpdate({code:ucode},{$pull:{customers:user}})
 
@@ -666,12 +664,13 @@ router.post('/coupon',async(req,res,next)=>{
   //console.log('addset=',updateCust);
   const couponCheck = await Coupon.aggregate([{$project:{code:1}},{$match:{code:ucode}}])
  // console.log('coupon check=',couponCheck);
-  // console.log('checkcode=',checkcode);
+  console.log('checkcode=',checkcode);
   // console.log(checkcode.length);
   let offerPrice=false;
+  let totalDiscount;
   let isVerified;
-  let newToCoupon;
-  if(checkcode.length>0){
+  let newToCoupon=true;
+  if(checkcode){
      isVerified=true;
 
      const findUser = await Coupon.findOne({code:ucode,customers:{$in:[user]}})
@@ -680,39 +679,42 @@ router.post('/coupon',async(req,res,next)=>{
        newToCoupon=true;
        console.log('type=',typeof findUser)
        console.log('Copon applied succesfully')
-       const updateCust = await Coupon.findOneAndUpdate({code:ucode},{$addToSet:{customers:user}},{upsert:true,new:true})
+       //const updateCust = await Coupon.findOneAndUpdate({code:ucode},{$addToSet:{customers:user}},{upsert:true,new:true})
   
 
-            const product = await Product.findById({_id:proid});
-            let itemPrice = product.price;
-            console.log('pro',product);
-            const percentage = checkcode[0].percentage;
-            const maxamount = checkcode[0].amount;
+            const cart = await Cart.findOne({user:userid});
+            let itemPrice = cart.bill;
+            console.log('pro',cart);
+            const percentage = checkcode.percentage;
+            const maxamount = checkcode.amount;
             
-                if(checkcode[0].isPercent){
+                if(checkcode.isPercent){
                   const percentValue =(percentage/100)*itemPrice;
                   const numberValue = itemPrice-maxamount;
                     if(percentValue<numberValue){
                       offerPrice=numberValue;
+                      totalDiscount=itemPrice-offerPrice;
                       console.log('numbervalue=',offerPrice);
                       
                     }else{
                       offerPrice = percentValue;
+                      totalDiscount=itemPrice-offerPrice;
                       console.log('percentValue=',offerPrice);
                     }
                 }
                 else{
 
                   const numberValue = itemPrice-maxamount;
+                  totalDiscount=maxamount;
                   console.log('only number offer=',numberValue);
                 }
 
       }
       else{
                 newToCoupon=false;
-                isVerified=false;
+                //isVerified=false;
                 console.log('Sorry You Already used the coupon!');
-                const updateCust = await Coupon.findOneAndUpdate({code:ucode},{$pull:{customers:user}})
+                //const updateCust = await Coupon.findOneAndUpdate({code:ucode},{$pull:{customers:user}})
       }
 
   }
@@ -721,10 +723,13 @@ router.post('/coupon',async(req,res,next)=>{
     //newToCoupon=false;
     offerPrice=false;
   }
-  console.log('offerprice here',offerPrice)
+  console.log('offerprice here',newToCoupon)
+  console.log('total Discount=',totalDiscount);
   
-  res.json({code:code,offerPrice,isVerified,newToCoupon})
+  res.json({code:ucode,offerPrice,isVerified,totalDiscount,newToCoupon})
 })
+router.post('/setdiscount',couponController.setDiscount);
+router.post('/applycoupon',couponController.applyCoupon)
 
 
 router.delete('/order/:id',async(req,res,next)=>{

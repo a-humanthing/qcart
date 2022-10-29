@@ -1,4 +1,4 @@
-const admin = require('../../model/admin');;
+const admin = require('../../model/admin');
 const Banner = require('../../model/banner');
 
 module.exports.showBanner=async(req,res,next)=>{

@@ -26,6 +26,7 @@ const orderSchema = new mongoose.Schema(
         }
             
     ],
+ 
     bill:{
         type:Number,
         

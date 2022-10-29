@@ -63,53 +63,52 @@
         </div>
     </div>
     <div class="col-12 col-md-3 m-2 py-2 card" style="height: 15vmax;">
-            <div class="border-bottom mb-3">
-                    <h5 class="ms-1 text-secondary text-success mt-2">Price Details </h5>
-                    
+        <div class="border-bottom mb-3">
+                <h5 class="ms-1 text-secondary text-success mt-2">Price Details </h5>
+                
+        </div>
+        <div class="row mb-3">
+            <div class="col-6 ">
+                Price(<%=quantity %> item)
             </div>
-            <div class="row mb-3">
-                <div class="col-6 ">
-                    Price(<%=quantity %> item)
-                </div>
-                <div class="col-6 ">
-                    <%=totalPrice %> 
-                </div>
+            <div class="col-6 ">
+                <%=totalPrice %> 
             </div>
-            <%if(checkoutType==='single'){%> 
-            <div class="row mb-3">
-                <div class="col-6 ">
-                    Offer Price(coupon):
-                </div>
-                <div class="col-6 ">
-                    <%=offerPrice %> 
-                </div>
-            </div>
-            <% } %> 
+        </div>
+    <% if(checkoutType==='cart'){%> 
+        <% if(couponApplied){ %> 
+        <div class="row mb-3">
+            <div class="col-6">Coupon Discount</div>
+                <div class="col-6"><%=discountPrize %></div>
+        </div>
+        <% }%>
+    <% } %> 
     
-            <div class="row mb-3">
-                <div class="col-6 ">
-                    Delivery Charges
-                </div>
-                <div class="col-6 ">
-                    <%=deliveryCharge %> 
-                </div>
+        <!-- <div class="row mb-3">
+            <div class="col-6 ">
+                Delivery Charges
             </div>
-            <div class="row  border-bottom mb-3">
-                <div class="col-6 ">
-                    Packing Charges
-                </div>
-                <div class="col-6 ">
-                    <%=packagingCharge %> 
-                </div>
+            <div class="col-6 ">
+                <=deliveryCharge %> 
             </div>
-            <div class="row mb-3">
-                <div class="col-6 ">
-                    Total Payable
-                </div>
-                <div class="col-6 ">
-                    <%=total %> 
-                </div>
+        </div>
+        <div class="row  border-bottom mb-3">
+            <div class="col-6 ">
+                Packing Charges
             </div>
+            <div class="col-6 ">
+                <=packagingCharge %> 
+            </div>
+        </div> -->
+        <div class="row border-top pt-2 mb-3">
+            <div class="col-6 ">
+                Total Payable
+            </div>
+            <div class="col-6 ">
+                <%=total %> 
+            </div>
+        </div>
     </div>
+    
   </div>
 </div>

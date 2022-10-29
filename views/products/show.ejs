@@ -107,18 +107,19 @@
                                 <li>Adipiscing elit,set</li>
                            
                             </ul>
-                            <form id="couponForm">
+                            <!-- <form id="couponForm">
                                 <input type="text"  id="couponCode" style="float: left; width: 214px;height: 36px; text-transform: uppercase;" placeholder="Enter Coupon Code">
                                 <button id="couponButton" type="submit" style="width: 100px;height: 36px;" class="btn btn-success" >Apply</button>
                             </form>
                          
                             <p id="couponStatus" class="" style="display: none;"></p>
                             
-                            <input type="text" id="productid" value="<%=product._id %>" hidden>
+                            <input type="text" id="productid" value="<=product._id %>" hidden> -->
 
 
                             <!-- <form> -->
                                 <!-- <input type="hidden" name="product-title" value="Activewear"> -->
+                                <input type="text" id="productid" value="<%=product._id %>" hidden>
                                 <div class="row mt-3">
                                     <div class="col-auto">
                                         <ul class="list-inline pb-3">
@@ -146,7 +147,7 @@
                                 <div class="row pb-3">
                                     <div class="col d-grid">
                                         <!-- <a href="/product/checkout/<product._id%>" class="btn btn-success btn-lg" onclick="checkPrice()" >Buy</a>  -->
-                                        <a href="/product/checkout/<%=product._id%>" id="buyLink" class="btn btn-success" class="btn btn-success btn-lg" onclick="checkPrice()" >Buy</a>
+                                        <button  id="buyLink" class="btn btn-success" onclick="checkPrice()" class="btn btn-success btn-lg" >Buy</button>
                                     </div>
                                     <div class="col d-grid">
                                         <form action="/product/cart/<%=product._id%>" method="post">
@@ -230,80 +231,44 @@
 
     <script>
 
-        function checkPrice(){
-            const price = document.getElementById('priceDiv');
-            const style = window.getComputedStyle(price);
-            if(style.visibility==='visible'){
-                const id = document.getElementById('productid').value;
-                const offerPrice = document.getElementById('offerPrice').innerHTML;
-                fetch('/product/checkout',{
-                    method:'POST',
-                    headers:{'Content-Type':'application/json'},
-                    body:JSON.stringify({offerPrice,id})
-                }).then(res=>res.json()).then(data=>{
-                    if(data.success){
-                        //fetch(``)
-                        console.log('successfully added offerprice')
-                    }
-                })
-
-                //document.getElementById('buyLink').href=`/product/checkout/${productid}`;
-                alert(offerPrice)
-            }
-            else{
-                fetch('/product/checkout',{
-                    method:'POST',
-                    headers:{'Content-Type':'application/json'},
-                    body:JSON.stringify({id})
-                }).then(res=>res.json()).then(data=>{
-                    console.log('withoud offer')
-                })
-                const productid = document.getElementById('productid').value;
-                alert(productid)
-                //fetch(`/product/checkout/${productid}`)
+        // function checkPrice(){
+        //     const price = document.getElementById('priceDiv');
+        //     const style = window.getComputedStyle(price);
+        //     const id = document.getElementById('productid').value;
+                
+        //         fetch('/product/checkout',{
+        //             method:'POST',
+        //             headers:{'Content-Type':'application/json'},
+        //             body:JSON.stringify({id})
+        //         }).then(res=>res.json()).then(data=>{
+        //             console.log('withoud offer')
+        //         })
+        //         const productid = document.getElementById('productid').value;
+        //         alert(productid)
+        //         //fetch(`/product/checkout/${productid}`)
                
-            }
-        }
+            
+        // }
 
         //submission
+        function checkPrice(){
         const id = document.getElementById('productid').value;
         const buyButton = document.getElementById('buyLink');
-        buyButton.addEventListener('click',()=>{
-            fetch(`/product/checkout/${id}`);
-        })
-
-        const form = document.querySelector('#couponForm');
-        form.addEventListener('submit',(e)=>{
-            e.preventDefault();
-            const code = document.getElementById("couponCode").value
-            const proid = document.getElementById('productid').value;
-            console.log('og',code);
-            fetch('/product/coupon',{
+            fetch('/product/checkout',{
                 method:'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({code,proid})
-                }).then(res=>res.json()).then(data=>{
-                    if(data.isVerified){
-                        const productid = document.getElementById('productid').value;
-                        document.getElementById('buyLink').href=`/product/checkout/${productid}`;
-                        //document.getElementById('buyLink').href=`/product/${productid}`;
-                        document.getElementById('couponStatus').innerHTML='Coupon code Applied'
-                        document.getElementById('couponStatus').style='display:block;color:green;'
-                        document.getElementById('priceDiv').style='visibility:visible'
-                        document.getElementById('offerPrice').innerHTML=data.offerPrice;
-                        document.getElementById('offerLabel').innerHTML='Offer Price';
-                        document.getElementById('productprice').style='text-decoration:line-through';
-                    }
-                    else{
-
-                        const productid = document.getElementById('productid').value;
-                        document.getElementById('buyLink').href=`/product/checkout/${productid}`;
-                        document.getElementById('couponStatus').style='display:block;color:red;'
-                        document.getElementById('couponStatus').innerHTML='Invalid Code'
-                        document.getElementById('priceDiv').style='visibility:hidden'
-                        document.getElementById('productprice').style='text-decoration:none';
-                    }
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({id})
+            }).then(res=>res.json()).then(data=>{
+                window.location.href=`/product/checkout/${id}`
+    
             })
-        })
+            .catch(err=>{
+                window.location.reload();
+            })
+            
+    }
+
+
+
 
     </script>

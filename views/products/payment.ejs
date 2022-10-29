@@ -71,26 +71,31 @@
         <div class="col-6">Price(<%=quantity %> item)</div>
         <div class="col-6"><%=totalPrice %></div>
       </div>
-      <div class="row mb-3">
-        <div class="col-6 ">
-            Offer Price(coupon):
+
+      <% if(checkoutType==='cart'){%> 
+        <% if(couponApplied){ %> 
+        <div class="row mb-3">
+            <div class="col-6">Coupon Discount</div>
+                <div class="col-6"><%=discountPrize %></div>
         </div>
-        <div class="col-6 ">
-            <%=offerPrice %> 
-        </div>
-      </div>
-      <div class="row mb-3">
+        <% }%>
+    <% } %> 
+    
+
+      <!-- <div class="row mb-3">
         <div class="col-6">Delivery Charges</div>
-        <div class="col-6"><%=deliveryCharge %></div>
+        <div class="col-6"><=deliveryCharge %></div>
       </div>
       <div class="row border-bottom mb-3">
         <div class="col-6">Packing Charges</div>
-        <div class="col-6"><%=packagingCharge %></div>
-      </div>
-      <div class="row mb-3">
+        <div class="col-6"><=packagingCharge %></div>
+      </div> -->
+
+      <div class="row border-top pt-2 mb-3">
         <div class="col-6">Total Payable</div>
         <div class="col-6"><%=total %></div>
       </div>
+      
     </div>
   </div>
 </div>
@@ -162,5 +167,40 @@
          
 
         }
+
+        const couponForm = document.querySelector('#couponForm');
+        couponForm.addEventListener('submit',(e)=>{
+            e.preventDefault();
+            const code = document.getElementById("couponCode").value
+            const proid = document.getElementById('productid').value;
+            console.log('og',code);
+            fetch('/product/coupon',{
+                method:'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({code,proid})
+                }).then(res=>res.json()).then(data=>{
+                    if(data.isVerified){
+                        const productid = document.getElementById('productid').value;
+                        document.getElementById('buyLink').href=`/product/checkout/${productid}`;
+                        //document.getElementById('buyLink').href=`/product/${productid}`;
+                        document.getElementById('couponStatus').innerHTML='Coupon code Applied'
+                        document.getElementById('couponStatus').style='display:block;color:green;'
+                        document.getElementById('priceDiv').style='visibility:visible'
+                        document.getElementById('offerPrice').innerHTML=data.offerPrice;
+                        document.getElementById('offerLabel').innerHTML='Offer Price';
+                        document.getElementById('productprice').style='text-decoration:line-through';
+                    }
+                    else{
+
+                        const productid = document.getElementById('productid').value;
+                        document.getElementById('buyLink').href=`/product/checkout/${productid}`;
+                        document.getElementById('couponStatus').style='display:block;color:red;'
+                        document.getElementById('couponStatus').innerHTML='Invalid Code'
+                        document.getElementById('priceDiv').style='visibility:hidden'
+                        document.getElementById('productprice').style='text-decoration:none';
+                    }
+            })
+        })
+
 </script>
 
