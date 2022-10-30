@@ -80,16 +80,7 @@
         </div>
         <% }%>
     <% } %> 
-    
-
-      <!-- <div class="row mb-3">
-        <div class="col-6">Delivery Charges</div>
-        <div class="col-6"><=deliveryCharge %></div>
-      </div>
-      <div class="row border-bottom mb-3">
-        <div class="col-6">Packing Charges</div>
-        <div class="col-6"><=packagingCharge %></div>
-      </div> -->
+  
 
       <div class="row border-top pt-2 mb-3">
         <div class="col-6">Total Payable</div>
@@ -128,7 +119,7 @@
         function rzrpay(data){
           console.log('amount=',data.amount)
           var options = {
-            "key": "rzp_test_hMqwAizfgv8cdG", // Enter the Key ID generated from the Dashboard
+            "key": "rzp_test_Bpo2tXK3kjU30H", // Enter the Key ID generated from the Dashboard
             "amount": data.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
             "currency": "INR",
             "name": "Qcart",
@@ -136,10 +127,6 @@
             "image": "https://img.icons8.com/ios-filled/344/amazon-alexa-logo.png",
             "order_id": data.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
             "handler": function (response){
-                // alert(`${response}`)
-                // alert(response.razorpay_payment_id);
-                // alert(response.razorpay_order_id);
-                // alert(response.razorpay_signature)
                 verifypayment(response,data)
             },
             "theme": {
@@ -161,6 +148,7 @@
             if(data.success){
               window.location.href='/product/ordercompletion'
             }else{
+              alert('false')
               window.location.reload();
             }
           })

@@ -548,22 +548,7 @@ router.post("/order", async (req, res) => {
           paymentType: paymethod,
           orderStatus: [{ type: "ordered", date: new Date() }],
         });
-    // }else{
-  
-    //   offerPrice = checkout.items[0].discountPrize;
-    //   console.log('offprice',offerPrice);
-    //   total = offerPrice + deliveryCharge + packagingCharge;
-
-    //    order = await Order.create({
-    //     user: user,
-    //     items: items,
-    //     checkoutid: checkid,
-    //     bill: total,
-    //     address: addressid,
-    //     paymentStatus: "pending",
-    //     paymentType: paymethod,
-    //     orderStatus: [{ type: "ordered", date: new Date() }],
-    //   });
+   
 
     console.log('last total',total)
     
@@ -582,8 +567,8 @@ router.post("/order", async (req, res) => {
   } else {
 
     const instance = new Razorpay({
-      key_id: 'rzp_test_hMqwAizfgv8cdG',
-      key_secret: 'XQdXOfEmvhHXaDI44N82gLrK',
+      key_id: 'rzp_test_Bpo2tXK3kjU30H',
+      key_secret: 'Dnohq7moOUpY7T8Z07Lefcvd',
     });
   
     let options = {
@@ -596,7 +581,7 @@ router.post("/order", async (req, res) => {
         res.send(err)
       }else{
 
-          console.log(order)
+          //console.log(order)
           res.json({order});
       }
     });
@@ -610,7 +595,7 @@ router.post('/verifypayment',async(req,res,next)=>{
 
     console.log('verify',req.body);
     const {payment,order}= req.body;
-     let hmac = crypto.createHmac('sha256','XQdXOfEmvhHXaDI44N82gLrK')
+     let hmac = crypto.createHmac('sha256','Dnohq7moOUpY7T8Z07Lefcvd')
     hmac.update(payment.razorpay_order_id+'|'+payment.razorpay_payment_id)
     hmac =hmac.digest('hex')
     if(hmac===payment.razorpay_signature){
@@ -637,35 +622,33 @@ router.post('/onlinepay',async(req,res,next)=>{
 router.get("/ordercompletion", async (req, res) => {
   const orderid = req.session.orderid;
   const user = req.session.user;
+  const ucode = req.session.code
   const order = await Order.find({ user: user }).populate({
     path: "items",
     populate: { path: "product" },
   }).sort({createdAt:-1});
   const orderquantity = await Order.aggregate([{$match:{user:mongoose.Types.ObjectId(user)}},{$project:{sum:{$sum:'$items.quantity'}}}])
-  console.log('qty',orderquantity);
-  console.log("address==", order.address);
-  console.log('order=',order)
+
+  if(req.session.couponApplied){
+    const updateCust = await Coupon.findOneAndUpdate({code:ucode},{$addToSet:{customers:user}},{upsert:true,new:true})
+    //const updateCust = await Coupon.findOneAndUpdate({code:ucode},{$pull:{customers:user}})
+  }
   const product = order.items;
   
   res.render("products/ordercompletion", { order,orderquantity });
 });
 
 router.post('/coupon',async(req,res,next)=>{
-  console.log(req.body);
+  //console.log(req.body);
   const {code,userid} = req.body;
   const user = req.session.user;
   const ucode =code.toUpperCase();
   const checkcode = await Coupon.findOne({code:ucode})
-  //checkcode[0].customers.push({customers:user})
-  //const updateCust = await Coupon.findOneAndUpdate({code:ucode},{$pull:{customers:user}})
+
 
  
-
-  //console.log('addset=',updateCust);
   const couponCheck = await Coupon.aggregate([{$project:{code:1}},{$match:{code:ucode}}])
- // console.log('coupon check=',couponCheck);
-  console.log('checkcode=',checkcode);
-  // console.log(checkcode.length);
+
   let offerPrice=false;
   let totalDiscount;
   let isVerified;
@@ -677,6 +660,7 @@ router.post('/coupon',async(req,res,next)=>{
      if(findUser===null){
        isVerified=true;
        newToCoupon=true;
+       req.session.code=ucode;
        console.log('type=',typeof findUser)
        console.log('Copon applied succesfully')
        //const updateCust = await Coupon.findOneAndUpdate({code:ucode},{$addToSet:{customers:user}},{upsert:true,new:true})
@@ -714,7 +698,7 @@ router.post('/coupon',async(req,res,next)=>{
                 newToCoupon=false;
                 //isVerified=false;
                 console.log('Sorry You Already used the coupon!');
-                //const updateCust = await Coupon.findOneAndUpdate({code:ucode},{$pull:{customers:user}})
+                
       }
 
   }

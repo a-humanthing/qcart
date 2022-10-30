@@ -193,13 +193,13 @@
         const data = {
         labels: labels,
         datasets: [{
-            label: 'Order by COD',
+            label: 'Payment by COD',
             backgroundColor: 'rgb(255, 99, 132)',
             borderColor: 'rgb(255, 99, 132)',
             data: cod,
         },
         {
-            label: 'Order by Online',
+            label: 'Payment by Online',
             backgroundColor: 'rgb(25, 99, 132)',
             borderColor: 'rgb(25, 99, 132)',
             data: online,
@@ -209,7 +209,13 @@
         const config = {
         type: 'bar',
         data: data,
-        options: {}
+        options: {
+        scales: {
+            y: {
+                beginAtZero:true
+            }
+        }
+    }
         };
 
         const myBar = new Chart(

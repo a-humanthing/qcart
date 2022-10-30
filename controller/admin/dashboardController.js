@@ -20,7 +20,7 @@ module.exports.sendSalesData=async(req,res,next)=>{
 module.exports.sendMethodData=async(req,res,next)=>{
     const bycod = await Order.aggregate([{$match:{$and:[{paymentType:'cod'},{createdAt:{$gte:new Date((new Date().getTime()-(7*24*60*60*1000)))}}]}},{$group:{_id:{$substr:['$createdAt',8,2]},cod:{$sum:1}}},{$sort:{_id:1}}])
     const byonline = await Order.aggregate([{$match:{$and:[{paymentType:'online'},{createdAt:{$gte:new Date((new Date().getTime()-(7*24*60*60*1000)))}}]}},{$group:{_id:{$substr:['$createdAt',8,2]},cod:{$sum:1}}},{$sort:{_id:1}}])
-    console.log('byweek',bycod)
+    console.log('bycod',bycod)
     console.log('byonline',byonline);
     res.json({bycod,byonline});
 }

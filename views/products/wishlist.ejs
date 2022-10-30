@@ -6,17 +6,19 @@
             <h4>wishlist</h4>
         </div>
 <% for(let item of wish) {%>
-    <a  href="/product/<%=item._id %>">
+    
     <div>
        
         <div class="card  mb-3" >
             <div class="row align-items-center">
                 <div class="col-md-4">
                     <% for(let img of item.image){ %> 
-                    <img class="object-fit-content"
+                        <a  href="/product/<%=item._id %>">
+                    <img class="object-fit-content p-2"
                     width="100px"
                     height="100px" src="<%= img.url %>" alt="">
                         <% } %> 
+                    </a>
                 </div>
                 <div class="col-md-5">
                     <div class="card-body">
@@ -48,7 +50,6 @@
             </div>
             </div>
         </div>
-    </a>
         <% } %> 
     </div>
     </section>
