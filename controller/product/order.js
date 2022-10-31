@@ -170,7 +170,7 @@ module.exports.showOrdercompletion = async (req, res) => {
     const updateCust = await Coupon.findOneAndUpdate({code:ucode},{$addToSet:{customers:user}},{upsert:true,new:true})
     //const updateCust = await Coupon.findOneAndUpdate({code:ucode},{$pull:{customers:user}})
   }
-  const product = order[0].items[0].product;
-  console.log('itemsnow',product)
+  // const product = order[0].items[0].product;
+  // console.log('itemsnow',product)
   res.render("products/ordercompletion", { order,orderquantity });
 }

@@ -1,0 +1,46 @@
+<% layout('/layouts/userbp') %>
+<div class="100vmin p-5 ">
+    <div class="text-center mb-3">
+        <h4>Rate This Product</h4>
+    </div>
+    <div class="row mb-3">
+        <div class="col-6">
+          
+            <form action="/product/<%=product._id%>/review" method="post" class="needs-validation mb-3" novalidate>
+              <h3>Leave a Review</h3>
+              <div class="mb-3">
+                
+                <fieldset class="starability-basic">
+                  <legend>Rate :</legend>
+                  <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="0" checked aria-label="No rating." />
+                  <input type="radio" id="first-rate1" name="rating" value="1" />
+                  <label for="first-rate1" title="Terrible">1 star</label>
+                  <input type="radio" id="first-rate2" name="rating" value="2" />
+                  <label for="first-rate2" title="Not good">2 stars</label>
+                  <input type="radio" id="first-rate3" name="rating" value="3" />
+                  <label for="first-rate3" title="Average">3 stars</label>
+                  <input type="radio" id="first-rate4" name="rating" value="4" />
+                  <label for="first-rate4" title="Very good">4 stars</label>
+                  <input type="radio" id="first-rate5" name="rating" value="5" />
+                  <label for="first-rate5" title="Amazing">5 stars</label>
+                </fieldset>
+  
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="body">Review</label>
+                <textarea name="body" id="body" class="form-control" cols="30" rows="3" required></textarea>
+              </div>
+              <button class="btn btn-success mb-3">Post Review</button>
+            </form>
+     
+        </div>
+        <div class="col-4 ">
+            <div class="mb-3">
+                <h6><%=product.productname %> </h6>
+                <% for(let img of product.image) {%>
+                    <img width="100px" height="100px" src="<%=img.url%>" alt="">
+                <% } %>  
+            </div>
+        </div>
+    </div>
+</div>

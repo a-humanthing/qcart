@@ -147,7 +147,7 @@ router.get("/home",  async (req, res) => {
   console.log('user bans==',banners)
   console.log('user ban=',banner)
 
-  const user = req.user._id;
+  const user = req.session.user;
   if(user){
 
       const cart = new Cart({ user });

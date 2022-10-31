@@ -107,18 +107,7 @@
                                 <li>Adipiscing elit,set</li>
                            
                             </ul>
-                            <!-- <form id="couponForm">
-                                <input type="text"  id="couponCode" style="float: left; width: 214px;height: 36px; text-transform: uppercase;" placeholder="Enter Coupon Code">
-                                <button id="couponButton" type="submit" style="width: 100px;height: 36px;" class="btn btn-success" >Apply</button>
-                            </form>
-                         
-                            <p id="couponStatus" class="" style="display: none;"></p>
-                            
-                            <input type="text" id="productid" value="<=product._id %>" hidden> -->
-
-
-                            <!-- <form> -->
-                                <!-- <input type="hidden" name="product-title" value="Activewear"> -->
+                           
                                 <input type="text" id="productid" value="<%=product._id %>" hidden>
                                 <div class="row mt-3">
                                     <div class="col-auto">
@@ -164,6 +153,32 @@
         </div>
     </section>
     <!-- Close Content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center p-2">
+               <h4>Rating & Reviews</h4> 
+            </div>
+            <% for(let i of product.reviews) { %>
+                <div class="card mb-3 container"> 
+                  <div class="card-body">
+                    <h4> </h4>
+                    <p class="starability-result" data-rating="<%= i.rating %>">
+                      Rated: <%= i.rating %>  stars
+                    </p>
+                    
+                    <h5>Review: <span class="text-muted"><%= i.body %> </span></h5>
+                    <h6><%=i.author.username %> </h6>
+                    <% if(userid.equals(i.author._id)){ %> 
+                    <form action="/product/<%=product._id%>/review/<%=i._id%>?_method=DELETE" method="post">
+                      <button class="btn btn-small btn-danger">Remove</button>
+                    </form>
+                    <% } %> 
+                    
+                </div>
+              </div>
+              <% } %> 
+        </div>
+    </section>
 
      <!-- Start Article -->
      <section class="py-5">

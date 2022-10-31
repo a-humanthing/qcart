@@ -39,6 +39,13 @@
         <h6><%=order.bill %> </h6>
     </div>
     <div class="mb-5">
+        <label class="form-label" for="address">Delivery Address:</label>
+        <h6><%=order.address.name %> </h6>
+        <h6><%=order.address.mobile %> </h6>
+        <h6><%=order.address.address %>&nbsp; <%=order.address.cityDistrictTown%>  </h6>
+        <h6><%=order.address.pincode %>&nbsp;<%=order.address.state %>  </h6>
+    </div>
+    <div class="mb-5">
         <label class="form-label" for="method">Payment Method:</label>
         <ul>
             <li><%=order.paymentType %> </li>

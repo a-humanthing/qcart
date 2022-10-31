@@ -1,5 +1,5 @@
 const express = require("express");
-const { isLoggedIn, isActive, isBlocked } = require("../middleware");
+const { isLoggedIn, isActive, isBlocked ,validateReviewSchema} = require("../middleware");
 const Cart = require("../model/cart");
 const Wishlist = require("../model/wishlist");
 const { populate } = require("../model/products");
@@ -24,8 +24,11 @@ const checkoutController = require('../controller/product/checkout');
 const orderController = require('../controller/product/order');
 const paymentController = require('../controller/product/payment');
 const productviewController = require('../controller/product/productview');
+const reviewController = require('../controller/product/review');
 
 router.use(methodOverride("_method"));
+
+
 
 router.get("/cart", isLoggedIn,cartController.viewCart);
 
@@ -67,9 +70,13 @@ router.get("/ordercompletion", orderController.showOrdercompletion );
 router.post('/coupon',couponController.applyCoupon);
 router.post('/setdiscount',couponController.setDiscount);
 
+router.get('/:proid/review',reviewController.renderReviewForm);
+router.post('/:proid/review',validateReviewSchema,reviewController.postReview);
+
+router.delete('/:proid/review/:revid',reviewController.deleteReview)
 
 
-router.delete('/order/:id',orderController.deleteOrder)
+router.delete('/order/:id',orderController.deleteOrder);
 
 router.get("/:id",productviewController.showProduct);
 
