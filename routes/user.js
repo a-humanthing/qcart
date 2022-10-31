@@ -25,6 +25,11 @@ const Address = require("../model/address");
 const Useraddress = require("../model/userAddress");
 const Banner = require('../model/banner');
 router.use(methodOverride("_method"));
+
+const otpController = require("../controller/user/otpController");
+const profileController = require('../controller/user/profileController');
+const addressController = require('../controller/user/addressController');
+
 //nodemailer things
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -130,39 +135,10 @@ router.post(
   }
 );
 
-router.get("/otplogin", (req, res, next) => {
-  res.render("users/otpLogin");
-});
-router.post("/otplogin", sendOtpVerificationEmail, async (req, res, next) => {
-  const { email } = req.body;
-  const user = await User.findOne({ email: `${email}` });
-  if (user !== null) {
-    const data = await Otp.findOne().sort({ createdAt: -1 });
-    console.log(data);
-    const otp = data.otp;
-    res.render("users/otpComp", { otp, email });
-  } else {
-    req.flash("error", "not a valid email");
-    return res.redirect("/user/login");
-  }
-});
+router.get("/otplogin",otpController.renderOtpForm);
+router.post("/otplogin", sendOtpVerificationEmail,otpController.otpLogin );
 //Otp login has to reworked to
-router.post("/otpcomp", async (req, res, next) => {
-  const { email, otp } = req.body;
-  const data = await Otp.findOne().sort({ createdAt: -1 });
-  const user = await User.findOne({ email });
-  const hashOtp = data.otp;
-  bcrypt.compare(otp, hashOtp, (err, result) => {
-    if (result) {
-      req.session.otpVerified = true;
-      res.locals.UserId = user._id;
-      return res.redirect("/user/home");
-    } else {
-      req.flash("error", "otp validation failed");
-      res.redirect("/user/login");
-    }
-  });
-});
+router.post("/otpcomp", otpController.validateOtp );
 // removed isLoggedIn for otp verification,isActive,
 router.get("/home",  async (req, res) => {
   const product = await Product.find({});
@@ -183,115 +159,20 @@ router.get("/home",  async (req, res) => {
   res.render("home/home", { product,banners  });
 });
 
-router.get("/profile", isLoggedIn,async (req, res, next) => {
-  const id = req.user._id;
-  res.locals.UserId = req.session.username;
-  const user = await User.findById(id);
-  res.render("users/info", { user });
-});
-router.get("/profile/info",isLoggedIn, async (req, res) => {
-  res.locals.UserId = req.session.username;
-  const id = req.user._id;
-  const user = await User.findById(id);
-  res.render("users/info", { user });
-});
-router.get("/profile/info/edit", isLoggedIn,async (req, res, next) => {
-  res.locals.UserId = req.session.username;
-  const id = req.user;
-  const user = await User.findById(id);
-  res.render("users/infoEdit", { user });
-});
+router.get("/profile", isLoggedIn,profileController.showProfile);
+router.get("/profile/info",isLoggedIn,profileController.showProfileInfo);
+router.get("/profile/info/edit", isLoggedIn,profileController.renderProfileUpdateForm);
 router.put(
   "/profile/info/edit",isLoggedIn,
-  asyncErrorCatcher(async (req, res, next) => {
-    req.flash("error", "This function is Currently Unavailable");
-    return res.redirect("/user/profile/info");
-    // const {username}=req.body;
-    // const id = req.user._id;
-    // const regex = /^[a-zA-Z ]*$/;
-    // if(regex.test(username)){
-    //     console.log(regex.test(username));
-    //     const updatedUser = await User.findByIdAndUpdate(id,{username});
-    //     console.log(updatedUser);
-    //     req.flash('success','Username updated succesfully')
-    //     return res.redirect('/user/profile/info');
-    // }
-    // else{
-    //     req.flash('error','Username Is Invalid Try Again');
-    //     return res.redirect('/user/profile/info')
-    // }
-  })
+  asyncErrorCatcher(profileController.updateProfile)
 );
-router.get("/address",isLoggedIn, async (req, res) => {
-  res.locals.UserId = req.user.username;
-  const id = req.session.user;
+router.get("/address",isLoggedIn,addressController.showAllAddress );
+router.get('/new/address',isLoggedIn,addressController.renderAddressForm)
+router.post('/new/address',isLoggedIn,addressController.addAddress)
+router.get('/address/:id',isLoggedIn,addressController.showSingleAddress);
 
-  let useraddress = await Useraddress.findOne({user:id});
-  console.log('us',useraddress)
-  if(useraddress){
-    const address1 = await Useraddress.findOne({user:id}).populate('address');
-    const address = address1.address;
-    return res.render('users/address',{address});
-  }else{
-    res.redirect('/user/new/address')
-  }
-
-  
-});
-router.get('/new/address',isLoggedIn,async(req,res)=>{
-    res.locals.UserId = req.user.username||'anonymous';
-    res.render('users/addressForm');
-})
-router.post('/new/address',isLoggedIn,async(req,res,next)=>{
-    const id = req.session.user;
-    console.log(id);
-    let addressExist = await Useraddress.findOne({user:id});
-    const address = new Address(req.body);
-    await address.save();
-    if(addressExist){
-      const addressId = address._id;
-      addressExist.address.push(addressId);
-      console.log('address==',addressExist);
-
-      await addressExist.save();
-      return res.redirect('/user/address');
-    }
-    else{
-      
-      const addressId = address._id;
-      const userAddress = new Useraddress({user:id});
-      userAddress.address.push(addressId);
-      await address.save();
-      console.log('userad==',userAddress)
-      await userAddress.save();
-    }
-    console.log(address);
-    res.redirect('/user/address');
-})
-router.get('/address/:id',async(req,res,next)=>{
-  const {id} = req.params;
-  res.locals.UserId = req.session.username;
-  console.log('address id==',id);
-  const address = await Address.findById(id);
-  console.log('address==',address);
-  res.render('users/addressEdit',{address});
-})
-
-router.put('/address/:id',async(req,res,next)=>{
-  const {id} = req.params;
-  res.locals.UserId = req.session.username;
-  const editAddrss = await Address.findByIdAndUpdate(id,{...req.body})
-  console.log(editAddrss)
-  req.flash('success','address updated sucessfully')
-  res.redirect('/user/address')
-})
-router.delete('/address/:id',async(req,res,next)=>{
-  const {id} = req.params;
-  res.locals.UserId = req.session.username;
-  const deleteAddress = await Address.findByIdAndDelete(id);
-  req.flash('success','Successfully Deleted');
-  res.redirect('/user/address')
-})
+router.put('/address/:id',isLoggedIn,addressController.updateAddress);
+router.delete('/address/:id',isLoggedIn,addressController.deleteAddress)
 router.get("/category/:id", async (req, res) => {
   const { id } = req.params;
   const catList = await Product.find({ category: { $regex: id } });

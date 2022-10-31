@@ -14,7 +14,6 @@
                         <div class="card mb-5 p-3">
                           <div class="row align-items-center  ">
                             <div class="col-md-3">
-                                <% console.log('ejsitem ',item) %> 
                               <% for(let img of item.product.image){ %>
                                 <a href="/product/<%=item._id %>">
                               <img
@@ -51,10 +50,10 @@
                         <div class="row mt-3">
                             
                             <div class="col-md-2">
-                                <form id="decreaseForm" style="display: inline;" >
+                                <div id="decreaseForm" class="decreaseForm" style="display: inline;" >
                                     <input type="text" id="proidhidden" name="proidhidden" value="<%=item._id%>" hidden>
-                                    <button type="submit" id="reduceCartQty"  class="btn btn-primary">-</button>
-                                </form>
+                                    <button  id="reduceCartQty" onclick=" rdc('<%=item.product._id%>')" class="btn btn-primary">-</button>
+                                </div>
                                 <a href="" class="btn btn-primary"><%=item.quantity %></a>
     
                                 <form style="display: inline;" action="/product/cart/<%=item.product._id %>" method="post">
@@ -162,17 +161,19 @@
   <!-- modal end -->
 
 <script>
-    const reduceForm = document.querySelector('#decreaseForm');
-    reduceForm.addEventListener('submit',(e)=>{
-        //e.preventDefault();
-        const proid= document.getElementById('proidhidden').value;
+    function rdc(proid){
+        //const proid= proid;
+        
         fetch('/product/reduceqty',{
             method:'POST',
             headers:{'Content-Type':'application/json'},
             body:JSON.stringify({proid})
-        }).then(res=>res.json()).then(data=>console.log(data))
+        }).then(res=>res.json()).then(data=>{
+            window.location.reload()
+        })
+        .catch(err=>console.log(err))
 
-    })
+    }
 
      
 
