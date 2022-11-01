@@ -73,12 +73,10 @@
                                <span class="d-inline" id="offerLabel"></span>   
                             </div>
                             <p class="py-2">
+                                <%for(let i=1;i<=avgStar;i++){ %> 
                                 <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-secondary"></i>
-                                <span class="list-inline-item text-dark">Rating 4.8 | 36 Comments</span>
+                                <% } %> 
+                                <span class="list-inline-item text-dark">Rating <%=avgStar %>  | <%=totalReviews %>  Reviews</span>
                             </p>
                             <ul class="list-inline">
                                 <li class="list-inline-item">
@@ -155,11 +153,18 @@
     <!-- Close Content -->
     <section class="py-5">
         <div class="container">
+
+                <button class="btn btn-success btn-sm" disabled><%=avgStar %><span class = "fa fa-star checked"></span>  </button> 
+                <span class="text-mute"><%=totalReviews %>&nbsp; reviews </span>
+        </div>
+    </section>
+    <section class="py-5">
+        <div class="container">
             <div class="text-center p-2">
                <h4>Rating & Reviews</h4> 
             </div>
             <% for(let i of product.reviews) { %>
-                <div class="card mb-3 container"> 
+                <div class="card col-6 mb-3 container"> 
                   <div class="card-body">
                     <h4> </h4>
                     <p class="starability-result" data-rating="<%= i.rating %>">

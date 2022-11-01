@@ -142,11 +142,19 @@ router.post("/otpcomp", otpController.validateOtp );
 // removed isLoggedIn for otp verification,isActive,
 router.get("/home",  async (req, res) => {
   const product = await Product.find({});
-  const banner = await Banner.find({});
-  const banners = banner[0].homeBanner;
+  let banners = await Banner.find({});
   console.log('user bans==',banners)
-  console.log('user ban=',banner)
-
+  if(banners.length<1){
+    banners=[{
+      bannerName: 'Home Banner',
+      mainHeading: 'New Season ',
+      subHeading: 'Offer Closes Soon',
+      description: 'Buy Every Trendy Pieces At A Surprising Price!!',
+      image: [ {url:'https://res.cloudinary.com/dsehj85r6/image/upload/v1666757490/Qcart/yvpa5brqtvobkkle09us.webp',
+        filenam:'Qcart/jxc1wbpk77beculapifn'} ]
+    }
+  ]
+  }
   const user = req.session.user;
   if(user){
 
@@ -155,6 +163,7 @@ router.get("/home",  async (req, res) => {
         await cart.save();
         await wishlist.save();
   }
+  console.log('bannerhome',banners)
   
   res.render("home/home", { product,banners  });
 });

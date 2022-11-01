@@ -10,9 +10,24 @@ module.exports.showProduct = async (req, res) => {
       populate:{
           path:'author'
       }});
-      const totalrating = await Product.aggregate([{$match:{_id:id}}])
-      console.log('t',totalrating)
+      const array =product.reviews;
+      let totalstars = 0;
+      for(let a of array){
+        totalstars+=a.rating
+      }
+      const totalReviews = array.length;
+      let avgStar
+      if(totalReviews===0){
+        avgStar=0;
+      }
+      else{
+         avgStar =Math.round(totalstars/totalReviews*10)/10;
+      }
+      console.log('star',avgStar);
+
+
+      console.log('t',avgStar)
     console.log('p',product)
     const allProducts = await Product.find({});
-    res.render("products/show", { product, userId, allProducts });
-  }
+    res.render("products/show", { product, userId, allProducts,totalReviews,avgStar });
+}

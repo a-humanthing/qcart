@@ -5,6 +5,7 @@ const express = require('express');
 const app = express();
 const path = require('path')
 const ejsMate = require('ejs-mate');
+const mongoSanitize = require('express-mongo-sanitize');
 const adminRoutes = require('./routes/admin')
 const User = require('./model/user')
 const Admin = require('./model/admin')
@@ -22,7 +23,8 @@ const Cart = require('./model/cart')
 const Category = require('./model/category');
 const Razorpay = require('razorpay')
 
-
+const dbUrl = process.env.DB_URL
+//'mongodb://0.0.0.0:27017/qcart'
 mongoose.connect('mongodb://0.0.0.0:27017/qcart');
 
 const db = mongoose.connection;
@@ -60,6 +62,7 @@ app.set('views',path.join(__dirname,'views'))
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(mongoSanitize());
 
 
 app.use(session(sessionConfig));

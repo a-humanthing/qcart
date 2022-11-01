@@ -19,7 +19,13 @@ module.exports.showDashboard = async(req,res,next)=>{
     //order revenue
 
     const revenue = await Order.aggregate([{$group:{_id:null,sum:{$sum:'$bill'}}}])
-    const totalRevenue = revenue[0].sum;
+    let totalRevenue;
+    if(revenue.length>0){
+
+        totalRevenue = revenue[0].sum;
+    }else{
+        totalRevenue=0;
+    }
     console.log('rev',revenue)
 
 
