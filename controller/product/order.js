@@ -4,7 +4,7 @@ const Product = require('../../model/products');
 const Cart = require('../../model/cart');
 const Address = require('../../model/address');
 const Order = require('../../model/order');
-
+const Coupon = require('../../model/coupon');
 const Razorpay = require('razorpay');
 const mongoose = require('mongoose');
 
