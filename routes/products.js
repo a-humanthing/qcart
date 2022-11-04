@@ -36,6 +36,7 @@ router.post("/cart/:id", isLoggedIn,cartController.addToCart );
 router.post("/reduceqty", cartController.reduceQty);
 
 router.delete("/cart/:id", isLoggedIn,cartController.removeFromCart );
+router.post('/cart/remove/:id',cartController.removeAsynCart)
 
 router.get("/wishlist", isLoggedIn,wishListController.viewWishlist);
 router.post("/wishlist/:proid", isLoggedIn,wishListController.addToWishlist);

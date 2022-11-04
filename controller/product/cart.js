@@ -29,6 +29,7 @@ module.exports.addToCart =  async (req, res, next) => {
     const { id } = req.params;
     res.locals.userid = req.session.user;
     const user = req.user._id;
+    let billcart;
     try {
       let cart = await Cart.findOne({ user });
       const pro = await Product.findById(id);
@@ -47,10 +48,11 @@ module.exports.addToCart =  async (req, res, next) => {
           cart.bill = cart.cartItem.reduce((acc, curr) => {
             return acc + curr.quantity * curr.price;
           }, 0);
+          billcart=cart.bill;
           cart.cartItem[itemIndex] = productItem;
           await cart.save();
-          req.flash('success','Item Quantity increased in Cart')
-          return res.redirect("back");
+          //req.flash('success','Item Quantity increased in Cart')
+          return res.json({qty:true,bill:billcart});
         } else {
           await cart.cartItem.push({ product, quantity, price });
           cart.bill = await cart.cartItem.reduce((acc, curr) => {
@@ -58,16 +60,18 @@ module.exports.addToCart =  async (req, res, next) => {
           }, 0);
         }
         cart = await cart.save();
-        req.flash('success','Item has been added to Cart')
-        return res.redirect("back");
+        billcart=cart.bill;
+        //req.flash('success','Item has been added to Cart')
+        return res.json({qty:false,cart:billcart});
       } else {
         const newCart = await Cart.create({
           user: user,
           products: [{ product, quantity, price }],
           bill: quantity * price,
         });
-        req.flash('success','Item has been added to Cart')
-        return res.redirect("back");
+        //req.flash('success','Item has been added to Cart')
+        billcart=cart.bill;
+        return res.json({qty:false,bill:billcart});
       }
     } catch (error) {
       console.log(error);
@@ -106,12 +110,15 @@ module.exports.reduceQty = async (req, res, next) => {
     const itemIndex = cart.cartItem.findIndex((item) => item.product == proid);
     console.log("index==", itemIndex);
     let item = cart.cartItem[itemIndex];
+    let itemqty;
+    let itembill;
     console.log('item=',item);
     if (item.quantity < 1) {
       cart.cartItem.splice(itemIndex, 1);
       cart.bill = cart.cartItem.reduce((acc, curr) => {
         return acc + curr.quantity * curr.price;
       }, 0);
+      itembill=cart.bill;
       cart = await cart.save();
     } else {
       cart.bill -= item.quantity * item.price;
@@ -121,10 +128,11 @@ module.exports.reduceQty = async (req, res, next) => {
       cart.bill = cart.cartItem.reduce((acc, curr) => {
         return acc + curr.quantity * curr.price;
       }, 0);
+      itembill=cart.bill;
       cart = await cart.save();
     }
     console.log("rdcqty==", reduceqty);
-    res.json({success:true})
+    res.json({success:true,itembill})
   }
 
   module.exports.removeFromCart = async (req, res, next) => {
@@ -147,6 +155,35 @@ module.exports.reduceQty = async (req, res, next) => {
         }, 0);
         cart = await cart.save();
         return res.redirect("/product/cart");
+      } else {
+        res.status(404).send("item not found");
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(400).send();
+    }
+  }
+
+  module.exports.removeAsynCart = async(req,res,next)=>{
+    const user = req.user._id;
+    const { id } = req.params;
+    try {
+      let cart = await Cart.findOne({ user });
+      console.log("cart===", cart);
+      const itemIndex = cart.cartItem.findIndex((item) => item.product == id);
+      console.log("index===", itemIndex);
+      if (itemIndex > -1) {
+        let item = cart.cartItem[itemIndex];
+        cart.bill -= item.quantity * item.price;
+        if (cart.bill < 0) {
+          cart.bill = 0;
+        }
+        cart.cartItem.splice(itemIndex, 1);
+        cart.bill = cart.cartItem.reduce((acc, curr) => {
+          return acc + curr.quantity * curr.price;
+        }, 0);
+        cart = await cart.save();
+        return res.json({success:true});
       } else {
         res.status(404).send("item not found");
       }

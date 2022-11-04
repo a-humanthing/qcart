@@ -43,9 +43,9 @@
     
                 
                 <div class="col-md-2">
-                    <form style="display: inline;" action="/product/cart/<%=item._id%>" class="mb-3" method="post">
-                        <button type="submit" class="btn btn-primary">Add to Cart</button>
-                    </form>
+                   
+                        <button onclick="addToCart('<%=item._id%>')" class="btn btn-primary mb-3">Add to Cart</button>
+                   
                 </div>
             </div>
             </div>
@@ -53,3 +53,4 @@
         <% } %> 
     </div>
     </section>
+    <script src="/js/addtocart.js"></script>

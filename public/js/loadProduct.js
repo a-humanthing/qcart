@@ -11,7 +11,6 @@ let count =0;
             const product=data.filterP;
             const container = document.getElementById('carousel-related-product');
             for(let pro of product){
-            console.log('pro',pro);
             container.innerHTML+= '<div class="p-2 pb-3 mb-4 col-md-4">'
 
                         
@@ -24,9 +23,7 @@ let count =0;
                                             +'<li><button type="submit" class="btn btn-success text-white"><i class="far fa-heart"></i></button></li>'
                                         +'</form>'
                                         +`<li><a class="btn btn-success text-white mt-2" href="/product/${pro._id}"><i class="far fa-eye"></i></a></li>`
-                                        +`<form action="/product/cart/${pro._id}" method="post">`
-                                            +'<li><button  class="btn btn-success text-white mt-2" type="submit"><i class="fas fa-cart-plus"></i></button></li>'
-                                        +'</form>'
+                                        +`<li><button  class="btn btn-success text-white mt-2" onclick="addToCart('${pro._id}')" ><i class="fas fa-cart-plus"></i></button></li>`
                                     +'</ul>'
                                 +'</div>'
                             +'</div>'
@@ -55,6 +52,7 @@ let count =0;
         })
         
     }
+    
     window.onload=(e)=>{
         const baseCount=3;
         fetch('/loadproduct',{
@@ -67,7 +65,6 @@ let count =0;
             const products = data.baseLoad;
             const container = document.getElementById('carousel-related-product');
             for(let pro of products){
-            console.log('pro',pro);
             container.innerHTML+= '<div class="p-2 pb-3 mb-4 col-md-4">'
 
                         
@@ -80,9 +77,9 @@ let count =0;
                                             +'<li><button type="submit" class="btn btn-success text-white"><i class="far fa-heart"></i></button></li>'
                                         +'</form>'
                                         +`<li><a class="btn btn-success text-white mt-2" href="/product/${pro._id}"><i class="far fa-eye"></i></a></li>`
-                                        +`<form action="/product/cart/${pro._id}" method="post">`
-                                            +'<li><button  class="btn btn-success text-white mt-2" type="submit"><i class="fas fa-cart-plus"></i></button></li>'
-                                        +'</form>'
+                                        
+                                        +`<li><button  class="btn btn-success text-white mt-2" onclick="addToCart('${pro._id}')" ><i class="fas fa-cart-plus"></i></button></li>`
+                                    
                                     +'</ul>'
                                 +'</div>'
                             +'</div>'
@@ -107,6 +104,7 @@ let count =0;
                                     }
         })
     }
+    
     window.addEventListener('scroll',()=>{
             if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight){
                 count++;

@@ -1,265 +1,385 @@
-<% layout('/layouts/userbp') %> 
-<section class="py-5 " >
-    <div class="">
-        <div class="row justify-content-center">
-            <div class="col-4 ">
-                <h4 class="text-primary">Cart</h4>
-
-            </div>
-        </div>
-        <div class="row justify-content-center "  >
-
-                <div class=" col-12 col-md-7  mb-4">
-                    <% for(let item of cart){ %> 
-                        <div class="card mb-5 p-3">
-                          <div class="row align-items-center  ">
-                            <div class="col-md-3">
-                              <% for(let img of item.product.image){ %>
-                                <a href="/product/<%=item._id %>">
-                              <img
-                                class="object-fit-content"
-                                width="100px"
-                                height="100px"
-                                src="<%= img.url %>"
-                                alt=""
-                              />
-                            </a>
-                              <% } %>
-                            </div>
-                            <div class="col-md-3">
-                              <div class="card-body">
-                                <h5 class="card-title"><%= item.product.productname %></h5>
-                                <h6><%=item.product.category  %> </h6>
-                                <small class="text-muted"> <%= item.product.price %> </small>
-        
-                                <div class="mb-3">
-                                
-                                </div>
-                              </div>
-                            </div>
-                          
-                            <div class="col-md-3">
-                                <form style="display: inline;" action="/product/wishlist/<%=item.product._id%>" class="mb-3" method="post">
-                                    <button type="submit" class="btn btn-primary">Add to WishList</button>
-                                </form>
-                            </div> 
-                            <div class="col-md-3">
-                                <h6>Expected Delivery</h6>
-                            </div> 
-                        </div>
-                        <div class="row mt-3">
-                            
-                            <div class="col-md-2">
-                                <div id="decreaseForm" class="decreaseForm" style="display: inline;" >
-                                    <input type="text" id="proidhidden" name="proidhidden" value="<%=item._id%>" hidden>
-                                    <button  id="reduceCartQty" onclick=" rdc('<%=item.product._id%>')" class="btn btn-primary">-</button>
-                                </div>
-                                <a href="" class="btn btn-primary"><%=item.quantity %></a>
-    
-                                <form style="display: inline;" action="/product/cart/<%=item.product._id %>" method="post">
-                                    <button type="submit" class="btn btn-primary">+</button>
-                                </form>
-                            </div>
-                            <div class="col-md-2">
-                                
-                                <form style="display: inline;" action="/product/cart/<%=item.product._id%>?_method=DELETE" method="post">
-                                <button type="submit" class="btn btn-danger">Remove</button>
-                                </form>
-                            </div>
-                           
-                          </div>
-                        </div> 
-                    <% } %>
-                </div>
-    
-                <div class=" col-12 col-md-3  ms-3 card p-4"  style="height: 20rem; position: sticky; top: 95px; --bs-gutter-x:0;">
-                    <div class="border-bottom mb-3">
-                        <h5 class="ms-3 text-secondary">Price Details</h5>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-6">Price(<%=cartcount %> item)</div>
-                        <div class="col-6"><%=cartFull.bill %></div>
-                    </div>
-                    <% if(cartFull.bill>0){ %> 
-                        <div class="row mb-3">
-                            <div class="col-6">Coupon Discount</div>
-                            <% if(!couponApplied){ %> 
-                            <div class="col-6"><p class="text-success" id="applyCoupon"  data-bs-toggle="modal" data-bs-target="#exampleModal">Apply Coupon</p></div>
-                            <% }else{%>
-                                <div class="col-6"><p class="text-success" id="applyCoupon" ><%=discountPrize %> </p></div>
-                            <% } %>   
-                        </div>
-                    <% } %> 
-                    <div class="row mb-3 border-top pt-3">
-                        <div class="col-6">Total Amount</div>
-                        <div id="totalAmount" class="col-6"><%=totalAmount %> </div>
-                    </div>
-
-
-                    <div class="mt-auto">
-                        <% if(cartFull.bill>0){ %> 
-                        <a href="/product/checkout" class="btn btn-primary">Place Order</a>
-                        <% }else{ %>
-                            <a href="/user/home" class="btn btn-primary">Add To Cart</a>
-                        <% } %>  
-                    </div>
-                   
-                </div>
-                <input type="text" id="useridhidden" name="useridhidden" value="<%=userid %>" hidden>
-        </div>
+<% layout('/layouts/userbp') %>
+<section class="py-5">
+  <div class="">
+    <div class="row justify-content-center">
+      <div class="col-4">
+        <h4 class="text-primary">Cart</h4>
+      </div>
     </div>
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-7 mb-4">
+        <% for(let item of cart){ %>
+        <div class="card mb-5 p-3">
+          <div class="row align-items-center">
+            <div class="col-md-3">
+              <% for(let img of item.product.image){ %>
+              <a href="/product/<%=item.product._id %>">
+                <img
+                  class="object-fit-content"
+                  width="100px"
+                  height="100px"
+                  src="<%= img.url %>"
+                  alt=""
+                />
+              </a>
+              <% } %>
+            </div>
+            <div class="col-md-3">
+              <div class="card-body">
+                <h5 class="card-title"><%= item.product.productname %></h5>
+                <h6><%=item.product.category %></h6>
+                <small class="text-muted"> <%= item.product.price %> </small>
+
+                <div class="mb-3"></div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <form
+                style="display: inline"
+                action="/product/wishlist/<%=item.product._id%>"
+                class="mb-3"
+                method="post"
+              >
+                <button type="submit" class="btn btn-primary">
+                  Add to WishList
+                </button>
+              </form>
+            </div>
+            <div class="col-md-3">
+              <h6>Expected Delivery</h6>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-md-2">
+              <div
+                id="decreaseForm"
+                class="decreaseForm"
+                style="display: inline"
+              >
+                <input
+                  type="text"
+                  id="price<%=item.product._id%>"
+                  name="propricehidden"
+                  value="<%=item.product.price%>"
+                  hidden
+                />
+                <button
+                  id="reduceCartQty"
+                  onclick=" rdc('<%=item.product._id%>')"
+                  class="btn btn-primary"
+                >
+                  -
+                </button>
+              </div>
+              <a id="<%=item.product._id %>" class="btn btn-primary"
+                ><%=item.quantity %></a
+              >
+              <button
+                onclick="increment('<%=item.product._id%>')"
+                class="btn btn-primary"
+              >
+                +
+              </button>
+            </div>
+            <div class="col-md-2">
+              <form
+                style="display: inline"
+                action="/product/cart/<%=item.product._id%>?_method=DELETE"
+                method="post"
+              >
+                <button type="submit" class="btn btn-danger">Remove</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <% } %>
+      </div>
+
+      <div
+        class="col-12 col-md-3 ms-3 card p-4"
+        style="height: 20rem; position: sticky; top: 95px; --bs-gutter-x: 0"
+      >
+        <div class="border-bottom mb-3">
+          <h5 class="ms-3 text-secondary">Price Details</h5>
+        </div>
+        <div class="row mb-3">
+          <div class="col-6">Price(<%=cartcount %> item)</div>
+          <div id="cartPrice" class="col-6"><%=cartFull.bill %></div>
+        </div>
+        <% if(cartFull.bill>0){ %>
+        <div class="row mb-3">
+          <div class="col-6">Coupon Discount</div>
+          <% if(!couponApplied){ %>
+          <div class="col-6">
+            <p
+              class="text-success"
+              id="applyCoupon"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+            >
+              Apply Coupon
+            </p>
+          </div>
+          <% }else{%>
+          <div class="col-6">
+            <p class="text-success" id="applyCoupon"><%=discountPrize %></p>
+          </div>
+          <% } %>
+        </div>
+        <% } %>
+        <div class="row mb-3 border-top pt-3">
+          <div class="col-6">Total Amount</div>
+          <div id="totalAmount" class="col-6"><%=totalAmount %></div>
+        </div>
+
+        <div class="mt-auto">
+          <% if(cartFull.bill>0){ %>
+          <a href="/product/checkout" class="btn btn-primary">Place Order</a>
+          <% }else{ %>
+          <a href="/user/home" class="btn btn-primary">Add To Cart</a>
+          <% } %>
+        </div>
+      </div>
+      <input
+        type="text"
+        id="useridhidden"
+        name="useridhidden"
+        value="<%=userid %>"
+        hidden
+      />
+    </div>
+  </div>
 </section>
- <!-- Launch Modal -->
- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header bg-success">
-          <h5 class="modal-title text-center text-white" id="exampleModalLabel">Apply Coupon</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-          
-          </button>
+<!-- Launch Modal -->
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-success">
+        <h5 class="modal-title text-center text-white" id="exampleModalLabel">
+          Apply Coupon
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="d-inline" id="priceDiv" style="visibility: hidden">
+            <h2
+              id="offerPrice"
+              class="d-inline text-primary text-center ms-3"
+            ></h2>
+            <span class="d-inline" id="offerLabel"></span>
+          </div>
+          <h3>Get Upto 60% discount on products</h3>
+          <div class="row">
+            <form id="couponForm">
+              <input
+                type="text"
+                id="couponCode"
+                style="
+                  float: left;
+                  width: 214px;
+                  height: 36px;
+                  text-transform: uppercase;
+                "
+                placeholder="Enter Coupon Code"
+              />
+              <button
+                id="couponButton"
+                type="submit"
+                style="width: 100px; height: 36px"
+                class="btn btn-success"
+              >
+                Check
+              </button>
+              <p id="couponStatus" class="" style="display: none"></p>
+            </form>
+          </div>
         </div>
-        <div class="modal-body">
-            <div class="row">
-                <div class="d-inline" id="priceDiv" style="visibility: hidden;">
-                    <h2 id="offerPrice" class="d-inline text-primary text-center ms-3"></h2> 
-                   <span class="d-inline" id="offerLabel"></span>   
-                </div>
-                <h3>Get Upto 60% discount on products</h3>
-                <div class="row">
-                    <form id="couponForm">
-                        <input type="text"  id="couponCode" style="float: left; width: 214px;height: 36px; text-transform: uppercase;" placeholder="Enter Coupon Code">
-                        <button id="couponButton" type="submit" style="width: 100px;height: 36px;" class="btn btn-success" >Check</button>
-                        <p id="couponStatus" class="" style="display: none;"></p>
-                    </form>
-                </div>
-            </div>
-            <div class="row">
-                <div class="mt-3">
-
-                    <input type="radio" name="selectCoupon">  Coupon Code
-                    <p>coupon Details</p>
-                    <p>expire details</p>
-                </div>
-            </div>
-     
+        <div class="row">
+          <div class="mt-3">
+            <input type="radio" name="selectCoupon" /> Coupon Code
+            <p>coupon Details</p>
+            <p>expire details</p>
+          </div>
         </div>
-        <div class="modal-footer justify-content-center align-items-center">
-            <div class="row">
-                <div id="maxDiscount" class="col-5 align-self-center">
-                    
-                </div>
-                <div class="col-4 ms-2 p-2">
-                    <button id="applyButton" class="ps-2 btn btn-success" onclick="applyCoupon()" disabled>Apply</button>
-                </div>
-            </div>
-
+      </div>
+      <div class="modal-footer justify-content-center align-items-center">
+        <div class="row">
+          <div id="maxDiscount" class="col-5 align-self-center"></div>
+          <div class="col-4 ms-2 p-2">
+            <button
+              id="applyButton"
+              class="ps-2 btn btn-success"
+              onclick="applyCoupon()"
+              disabled
+            >
+              Apply
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <!-- modal end -->
-
+</div>
+<!-- modal end -->
 <script>
-    function rdc(proid){
-        //const proid= proid;
-        
-        fetch('/product/reduceqty',{
+  function increment(d) {
+    fetch(`/product/cart/${d}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: d }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const cartModal = document.getElementById("cartmodal");
+        if (data.qty === true) {
+          let itemc = document.getElementById(`${d}`);
+          let itemprice = parseInt(document.getElementById(`price${d}`).value);
+          let totalPrice = parseInt(document.getElementById('totalAmount').innerHTML);
+          document.getElementById('totalAmount').innerHTML=data.bill;
+          document.getElementById('cartPrice').innerHTML=data.bill;
+          let itemquantity = parseInt(itemc.innerHTML)+1;
+          itemc.innerHTML=itemquantity;
+          cartModal.innerHTML =
+            '<p class="text-center">Item Quantity Increased</p>';
+          setTimeout(() => {
+            cartModal.innerHTML = "";
+          }, 3000);
+        } else {
+          cartModal.innerHTML =
+            '<p class="text-center text-danger">Something Went Wrong</p>';
+          setTimeout(() => {
+            cartModal.innerHTML = "";
+          }, 3000);
+        }
+      });
+  }
+</script>
+<script>
+  function rdc(proid) {
+    //const proid= proid;
+    let qty=parseInt(document.getElementById(`${proid}`).innerHTML);
+    if(qty>1){
+        fetch("/product/reduceqty", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ proid }),
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            let itemc = document.getElementById(`${proid}`);
+            let itemquantity = parseInt(itemc.innerHTML)-1;
+            itemc.innerHTML=itemquantity;
+
+            document.getElementById('totalAmount').innerHTML=data.itembill;
+            document.getElementById('cartPrice').innerHTML=data.itembill;
+        })
+        .catch((err) => console.log(err));
+    }else{
+        fetch(`/product/cart/remove/${proid}`,{
             method:'POST',
             headers:{'Content-Type':'application/json'},
             body:JSON.stringify({proid})
-        }).then(res=>res.json()).then(data=>{
+        })
+        .then(res=>res.json())
+        .then(data=>{
             window.location.reload()
         })
-        .catch(err=>console.log(err))
-
     }
+  }
 
-     
-
-    // function decreasecount(proid){
-    //     $.ajax({
-    //         url:'/product/reduceqty',
-    //         method:'POST',
-    //         data:{proid:proid},
-    //         success:location.reload()
-
-    //     })
-   // }
-        let dPrice;
-        let dCode;
-   const form = document.querySelector('#couponForm');
   
-        form.addEventListener('submit',(e)=>{
-            e.preventDefault();
-            const code = document.getElementById("couponCode").value
-            const userid = document.getElementById('useridhidden').value;
-            //console.log('og',code);
-            fetch('/product/coupon',{
-                method:'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({code,userid})
-                }).then(res=>res.json()).then(data=>{
-                    dPrice=data.offerPrice;
-                    dCode=data.code;
-                    if(data.isVerified){
-                        if(data.newToCoupon){
-                            document.getElementById('couponStatus').innerHTML='Coupon code Applied'
-                            document.getElementById('couponStatus').style='display:block;color:green;'
-                            document.getElementById('priceDiv').style='visibility:visible'
-                            document.getElementById('offerPrice').innerHTML=data.offerPrice;
-                            document.getElementById('offerLabel').innerHTML='Offer Price';
-                            //alert(data.totalDiscount)
-                            document.getElementById('maxDiscount').style='visibility:visible'
-                            document.getElementById('maxDiscount').innerHTML=data.totalDiscount
-                            document.getElementById('applyButton').disabled=false;
-                            //document.getElementById('productprice').style='text-decoration:line-through';
 
-                           
-                        }else{
-                            document.getElementById('couponStatus').style='display:block;color:red;'
-                            document.getElementById('couponStatus').innerHTML='Already Applied This Coupon'
-                            document.getElementById('priceDiv').style='visibility:hidden'
-                            document.getElementById('maxDiscount').style='visibility:hidden'
-                            document.getElementById('applyButton').disabled=true;
-                            //document.getElementById('productprice').style='text-decoration:none';
-                        }
-                        // const productid = document.getElementById('productid').value;
-                        // document.getElementById('buyLink').href=`/product/checkout/${productid}`;
-                        //document.getElementById('buyLink').href=`/product/${productid}`;
-                        
-                    }
-                    else{
-                        //const productid = document.getElementById('productid').value;
-                        //document.getElementById('buyLink').href=`/product/checkout/${productid}`;
-                        document.getElementById('couponStatus').style='display:block;color:red;'
-                        document.getElementById('couponStatus').innerHTML='Invalid Code'
-                        document.getElementById('priceDiv').style='visibility:hidden'
-                        document.getElementById('maxDiscount').style='visibility:hidden'
-                        document.getElementById('applyButton').disabled=true;
-                        //document.getElementById('productprice').style='text-decoration:none';
-                    }
-            })
-        })
 
-        function applyCoupon(){
-            const discountAmount = document.getElementById('maxDiscount').innerHTML;
-            
-            document.getElementById('applyCoupon').innerHTML=discountAmount+'&nbsp'+'('+dCode+')';
-            document.getElementById('totalAmount').innerHTML=dPrice;
-            const discountTotal = document.getElementById('totalAmount').innerHTML;
-            fetch('/product/setdiscount',{
-                method:'POST',
-                headers:{'Content-Type':'application/json'},
-                body:JSON.stringify({discountAmount,discountTotal})
-            }).then(res=>res.json()).then(data=>
-                //alert(data)
-                console.log(data)
-            )
+  let dPrice;
+  let dCode;
+  const form = document.querySelector("#couponForm");
 
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const code = document.getElementById("couponCode").value;
+    const userid = document.getElementById("useridhidden").value;
+    //console.log('og',code);
+    fetch("/product/coupon", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code, userid }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        dPrice = data.offerPrice;
+        dCode = data.code;
+        if (data.isVerified) {
+          if (data.newToCoupon) {
+            document.getElementById("couponStatus").innerHTML =
+              "Coupon code Applied";
+            document.getElementById("couponStatus").style =
+              "display:block;color:green;";
+            document.getElementById("priceDiv").style = "visibility:visible";
+            document.getElementById("offerPrice").innerHTML = data.offerPrice;
+            document.getElementById("offerLabel").innerHTML = "Offer Price";
+            //alert(data.totalDiscount)
+            document.getElementById("maxDiscount").style = "visibility:visible";
+            document.getElementById("maxDiscount").innerHTML =
+              data.totalDiscount;
+            document.getElementById("applyButton").disabled = false;
+            //document.getElementById('productprice').style='text-decoration:line-through';
+          } else {
+            document.getElementById("couponStatus").style =
+              "display:block;color:red;";
+            document.getElementById("couponStatus").innerHTML =
+              "Already Applied This Coupon";
+            document.getElementById("priceDiv").style = "visibility:hidden";
+            document.getElementById("maxDiscount").style = "visibility:hidden";
+            document.getElementById("applyButton").disabled = true;
+            //document.getElementById('productprice').style='text-decoration:none';
+          }
+          // const productid = document.getElementById('productid').value;
+          // document.getElementById('buyLink').href=`/product/checkout/${productid}`;
+          //document.getElementById('buyLink').href=`/product/${productid}`;
+        } else {
+          //const productid = document.getElementById('productid').value;
+          //document.getElementById('buyLink').href=`/product/checkout/${productid}`;
+          document.getElementById("couponStatus").style =
+            "display:block;color:red;";
+          document.getElementById("couponStatus").innerHTML = "Invalid Code";
+          document.getElementById("priceDiv").style = "visibility:hidden";
+          document.getElementById("maxDiscount").style = "visibility:hidden";
+          document.getElementById("applyButton").disabled = true;
+          //document.getElementById('productprice').style='text-decoration:none';
         }
+      });
+  });
 
- 
+  function applyCoupon() {
+    const discountAmount = document.getElementById("maxDiscount").innerHTML;
+
+    document.getElementById("applyCoupon").innerHTML =
+      discountAmount + "&nbsp" + "(" + dCode + ")";
+    document.getElementById("totalAmount").innerHTML = dPrice;
+    const discountTotal = document.getElementById("totalAmount").innerHTML;
+    fetch("/product/setdiscount", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ discountAmount, discountTotal }),
+    })
+      .then((res) => res.json())
+      .then((data) =>
+        //alert(data)
+        console.log(data)
+      );
+  }
 </script>
-          
- 

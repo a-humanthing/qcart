@@ -137,9 +137,9 @@
                                         <button  id="buyLink" class="btn btn-success" onclick="checkPrice()" class="btn btn-success btn-lg" >Buy</button>
                                     </div>
                                     <div class="col d-grid">
-                                        <form action="/product/cart/<%=product._id%>" method="post">
-                                            <button type="submit" class="btn btn-success btn-lg">Add To Cart</button>
-                                        </form>
+                                        
+                                            <button  onclick="addToCart('<%=product._id%>')" class="btn btn-success btn-lg">Add To Cart</button>
+                                        
                                     </div>
                                 </div>
                             <!-- </form> -->
@@ -203,6 +203,7 @@
     </section>
     <!-- End Article -->
     <script src="/js/loadProduct.js"></script>
+    <script src="/js/addtocart.js"></script>
     <script>
 
         function checkPrice(){
