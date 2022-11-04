@@ -36,6 +36,6 @@ const createProducts = new Schema({
             ref:'Review'
         }
     ]
-})
+},{timestamps:true})
 
 module.exports = mongoose.model('Product',createProducts)

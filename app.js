@@ -17,6 +17,7 @@ const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')
 const userRoutes = require('./routes/user');
 const productRoutes = require('./routes/products');
+const scrollRoutes = require('./routes/infiniteScroll');
 const ExpressError = require('./utils/ExpressError');
 const Subcategory = require('./model/subCategory');
 const Cart = require('./model/cart')
@@ -112,6 +113,7 @@ app.use(function (req, res, next) {
   app.use('/admin',adminRoutes);
   app.use('/user',userRoutes);
   app.use('/product',productRoutes);
+  app.use('/infinitescroll',scrollRoutes)
 
 
 
@@ -119,7 +121,7 @@ app.use(function (req, res, next) {
 
 app.get('/',(req,res)=>{
     
-    res.render('users/home')
+    res.redirect('/user/home');
 })
 
 
