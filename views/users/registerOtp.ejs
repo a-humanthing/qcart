@@ -1,0 +1,72 @@
+<% layout('/layouts/userbp') %> 
+<div class="loader">
+    <div class="loader-wheel"></div>
+    <div class="loader-text"></div>
+  </div>
+<section>
+    <div class="container col-12 col-sm-8 col-md-6  justify-content-center shadow-lg  mb-5">
+        <div class="p-5 m-5">
+            <div id="alert" style="width: 100%;"></div>
+                <h3>Verify Email</h3>
+                <div id="emailDiv">
+                    <div class="mb-3 ">
+                        <label class="form-label" for="email">Email:</label>
+                        <input class="form-control" type="text" id="email" name="email" required>
+                    </div>
+                    <button id="otpGenerator" class="btn btn-primary">Send OTP</button>
+                    <button class="btn btn-primary" id="refreshButton" style="display: none;"  onclick="emailChanged()">Refresh</button>
+                </div>
+                <form action="/user/verifyotp" id="otpForm" style="display: none;"  method="post">
+                    <div class="mb-3">
+                        <label class="form-label" for="otp">Otp:</label>
+                        <input class="form-control" type="text" id="otp" name="otp" required>
+                    </div>
+                    <button class="btn btn-primary">Continue</button>
+                </form>  
+                <p class="logCheck mt-2" ><a href="/user/login" style="text-decoration:none;">already have an account?log in</a></p>
+        </div>
+    </div>
+    
+</section>
+
+<script>
+    function emailChanged(){
+        const text = document.getElementById('refreshButton');
+        text.addEventListener('click',()=>{
+            window.location.reload();
+        })
+    }
+
+
+    const emailForm = document.getElementById('otpGenerator');
+    emailForm.addEventListener('click',()=>{
+        const email = document.getElementById('email').value;
+        fetch('/user/generateotp', {
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({email})
+        })
+        .then((res)=>res.json())
+        .then((data)=>{
+            console.log(data)
+            if(data.success){
+                document.getElementById('emailDiv').style.display = 'none';
+                
+                document.getElementById('otpForm').style.display = 'block';
+            }
+            else{
+                
+                const alertDiv = document.getElementById('alert');
+                alertDiv.innerHTML='<p class="border-danger text-danger">This mail is already Registered</p>'
+                const refreshButton = document.getElementById('refreshButton');
+                const sendButton = document.getElementById('otpGenerator');
+                refreshButton.style.display='block';
+                sendButton.style.display='none';
+               
+            }
+        })
+        .catch(e=>{
+            console.log('error',e)
+        })
+    })
+</script>

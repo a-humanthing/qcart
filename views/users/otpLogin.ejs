@@ -1,7 +1,7 @@
 <% layout('/layouts/userbp') %> 
 <section>
-    <div class="userLogin shadow mb-5 m-5 container">
-        <div class="p-5">
+    <div class="container col-12 col-sm-8 col-md-6  justify-content-center shadow-lg mb-5">
+        <div class="p-5 m-5">
             <h3>Login</h3>
             <div   class="needs-validation" novalidate>
                 <form action="/user/otplogin" method="post" class="logCheck">
@@ -16,7 +16,7 @@
                 <div class="mb-3">
                     <label class="form-label" for="otp">Otp:</label>
                     <input class="form-control" type="text" id="otp" name="otp" required>
-                    <p class="logCheck"><a href="/user/register">don't have an accout?create One</a></p>
+                    <p class="logCheck"><a href="/user/registerotp">don't have an accout?create One</a></p>
 
                 </div>
                 <div class="mb-3">

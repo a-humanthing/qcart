@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 
 module.exports.viewCart = async (req, res, next) => {
-  const id = req.user._id;
+  const id = req.session.user;
   req.session.discountAmount = false;
   req.session.discountTotal = false;
   req.session.couponApplied = false;
@@ -28,7 +28,7 @@ module.exports.viewCart = async (req, res, next) => {
 module.exports.addToCart =  async (req, res, next) => {
     const { id } = req.params;
     res.locals.userid = req.session.user;
-    const user = req.user._id;
+    const user = req.session.user;
     let billcart;
     try {
       let cart = await Cart.findOne({ user });
@@ -136,7 +136,7 @@ module.exports.reduceQty = async (req, res, next) => {
   }
 
   module.exports.removeFromCart = async (req, res, next) => {
-    const user = req.user._id;
+    const user = req.session.user;
     const { id } = req.params;
     try {
       let cart = await Cart.findOne({ user });
@@ -165,7 +165,7 @@ module.exports.reduceQty = async (req, res, next) => {
   }
 
   module.exports.removeAsynCart = async(req,res,next)=>{
-    const user = req.user._id;
+    const user = req.session.user;
     const { id } = req.params;
     try {
       let cart = await Cart.findOne({ user });

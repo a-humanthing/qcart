@@ -22,32 +22,34 @@
                 </div>
             </div>
         </div>
-        <div class="mb-3 p-3  shadow-sm card">
-            <div class="row ">
-                <div class="ps-2 col-12  pb-2 mb-3 border-bottom text-success fw-bold">
-                2. Delivery Address
-                </div>
-                <div class="col-8 pb-2  ">
-            
-                    <% let i=0; %> 
-        <form action="/product/selectaddress" method="post">
-            <% for(let add of address){ %> 
-            <div class="mb-3">
-                <input type="radio" name="selectaddress" value="<%=add._id %>"  checked id="<%=add._id %>">
-                <span class="btn btn-outline-secondary py-0"><%=add.addresstype %> </span>
-                <%=add.name %> 
-                <%=add.mobile %> <br>
-                <%=add.address %>
-                <%=add.cityDistrictTown %> 
-                <%=add.pincode %> 
+        <% if(isAddressAvailable){ %> 
+            <div class="mb-3 p-3  shadow-sm card">
+                <div class="row ">
+                    <div class="ps-2 col-12  pb-2 mb-3 border-bottom text-success fw-bold">
+                    2. Delivery Address
+                    </div>
+                    <div class="col-8 pb-2  ">
                 
+                        <% let i=0; %> 
+            <form action="/product/selectaddress" method="post">
+                <% for(let add of address){ %> 
+                <div class="mb-3">
+                    <input type="radio" name="selectaddress" value="<%=add._id %>"  checked id="<%=add._id %>">
+                    <span class="btn btn-outline-secondary py-0"><%=add.addresstype %> </span>
+                    <%=add.name %> 
+                    <%=add.mobile %> <br>
+                    <%=add.address %>
+                    <%=add.cityDistrictTown %> 
+                    <%=add.pincode %> 
+                    
+                </div>
+                <% } %> 
+                <button class="btn btn-primary" type="submit">Deliver To This</button>
+            </form>
+                </div>
+                </div>
             </div>
-            <% } %> 
-            <button class="btn btn-primary" type="submit">Deliver To This</button>
-        </form>
-            </div>
-            </div>
-        </div>
+        <% }%> 
         <div class="mb-3 p-3 shadow-sm card">
             <div class="row">
                 <div class="ps-2 col-12 pb-2 ">

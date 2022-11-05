@@ -17,7 +17,7 @@ const User = require("../model/user");
 const session = require("express-session");
 const Product = require("../model/products");
 const asyncErrorCatcher = require("../utils/asyncErrorCatcher");
-const { Otp } = require("../model/otp");
+const Otp = require("../model/otp");
 const Cart = require("../model/cart");
 const Wishlist = require("../model/wishlist");
 const methodOverride = require("method-override");
@@ -51,8 +51,8 @@ const sendOtpVerificationEmail = async (req, res, next) => {
       html: `<p>Enter <b>${otp}</b> in the app to verify your email address and complete Verification</p>`,
     };
     const saltRounds = 10;
-    const hashedOTP = await bcrypt.hash(otp, saltRounds);
-    const newOtpVerification = new Otp({
+    const hashedOTP = await bcrypt.hash(otp, 10);
+    const newOtpVerification = await Otp.create({
       email: email,
       otp: hashedOTP,
       createdAt: Date.now(),
@@ -70,10 +70,15 @@ const sendOtpVerificationEmail = async (req, res, next) => {
   }
 };
 
-
+router.get('/registerotp',async(req,res)=>{
+  res.render('users/registerOtp')
+})
 router.get("/register", (req, res) => {
-  res.render("users/register");
+  const email = req.session.emailUsed;
+  res.render("users/register",{email});
 });
+router.post('/generateotp',otpController.sendOtp)
+router.post('/verifyotp',otpController.verifyOtp)
 router.post(
   "/register",
   userJoiValidation,
@@ -81,6 +86,7 @@ router.post(
     try {
       const { email, username, password, phone } = req.body;
       const user = new User({ email, username, phone });
+      console.log('u',user);
       const registerUser = await User.register(user, password);
       console.log(registerUser);
       req.login(registerUser, (err) => {
@@ -91,7 +97,8 @@ router.post(
         return res.redirect("/user/home");
       });
     } catch (e) {
-      req.flash("error", e.message);
+      console.log(e.stack)
+      req.flash("error", `${e.message}`);
       return res.redirect("/user/register");
     }
   })
@@ -164,7 +171,6 @@ router.get("/home",  async (req, res) => {
         await wishlist.save();
   }
   console.log('bannerhome',banners)
-  
   res.render("home/home", { product,banners  });
 });
 

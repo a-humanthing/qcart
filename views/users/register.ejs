@@ -1,7 +1,7 @@
 
 <% layout('/layouts/userbp') %> 
 <section>
-    <div class="userRegister col-6 offset-3  mb-5 shadow container">
+    <div class="userRegister col-12 col-sm-8 col-md-6 justify-content-center  mb-5 shadow-lg container">
         <div class="m-5 p-5">
         <h1>Register</h1>
         <form action="/user/register" method="post" id="Myform" class="needs-validation" novalidate>
@@ -11,7 +11,7 @@
             </div>
             <div class="mb-3">
                 <label class="form-label" for="email">Email:</label>
-                <input class="form-control" type="email" id="email" name="email" required>
+                <input class="form-control" type="email" value="<%=email%>" id="email" name="email" readonly required >
             </div>
             <div class="mb-3">
                 <label class="form-label" for="phone">Phone:</label>
@@ -25,7 +25,7 @@
             <div class="mb-3">
                 <label class="form-label" for="cpassword">Confirm Password:</label>
                 <input class="form-control" type="password" id="cpassword" name="cpassword" required>
-                <p class="logCheck"><a href="/user/login">already have an account?log in</a></p>
+                <p class="logCheck mt-2"><a href="/user/login" style="text-decoration: none;">already have an account?log in</a></p>
 
             </div>
         

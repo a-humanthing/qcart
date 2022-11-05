@@ -2,7 +2,8 @@ const Wishlist = require("../../model/wishlist");
 const Product = require("../../model/products");
 
 module.exports.viewWishlist = async (req, res, next) => {
-    const id = req.user._id;
+    //const id = req.user._id;
+    const id = req.session.user;
     try {
       const wishList = await Wishlist.findOne({ user: id })
         .populate({

@@ -2,7 +2,8 @@ const User = require('../../model/user');
 
 
 module.exports.showProfile = async (req, res, next) => {
-    const id = req.user._id;
+    //const id = req.user._id;
+    const id = req.session.user;
     res.locals.UserId = req.session.username;
     const user = await User.findById(id);
     res.render("users/info", { user });

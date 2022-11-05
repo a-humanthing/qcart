@@ -4,7 +4,7 @@ const User = require('../../model/user');
 const session =require('express-session');
 
 module.exports.showAllAddress = async (req, res) => {
-    res.locals.UserId = req.user.username;
+    res.locals.UserId = req.session.username;
     const id = req.session.user;
     let useraddress = await Useraddress.findOne({user:id});
     if(useraddress){
@@ -17,7 +17,7 @@ module.exports.showAllAddress = async (req, res) => {
   }
 
   module.exports.renderAddressForm = async(req,res)=>{
-    res.locals.UserId = req.user.username||'anonymous';
+    res.locals.UserId = req.session.username||'anonymous';
     res.render('users/addressForm');
 }
 

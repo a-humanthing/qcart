@@ -44,12 +44,21 @@ module.exports.viewCheckout = async (req, res, next) => {
     req.session.checkoutid = checkoutid;
     console.log("cartcheck ==", checkout);
     const useraddress = await Useraddress.findOne({ user }).populate("address");
-    const address = useraddress.address;
+    let address;
+    let isAddressAvailable;
+    if(useraddress.length<1){
+      address=[];
+      isAddressAvailable=false;
+    }else {
+      isAddressAvailable=true;
+      address = useraddress.address;
+    }
     // console.log(useraddress)
     res.render("products/checkout", {
       totalPrice,
       quantity,
       address,
+      isAddressAvailable,
       total
     });
   }
@@ -57,7 +66,6 @@ module.exports.viewCheckout = async (req, res, next) => {
   module.exports.addToCheckout = async (req, res, next) => {
     const user = req.session.user;
     const { id,offerPrice } = req.body;
-    console.log(id)
     req.session.checkoutType = "single";
     res.locals.checkoutType= req.session.checkoutType;
     req.session.itemid = id;
@@ -89,7 +97,16 @@ module.exports.viewCheckout = async (req, res, next) => {
     populate: { path: "product" }});
     console.log('checkout==-',checkout);
     const useraddress = await Useraddress.findOne({ user }).populate("address");
-    const address = useraddress.address;
+    let address;
+    let isAddressAvailable;
+    console.log('addre',useraddress)
+    if(useraddress.length<1){
+      address=[];
+      isAddressAvailable=false;
+    }else {
+      isAddressAvailable=true;
+      address = useraddress.address;
+    }
     console.log('itemsss=',checkout[0].items.length)
     res.locals.username = req.session.username;
   
@@ -101,7 +118,8 @@ module.exports.viewCheckout = async (req, res, next) => {
       totalPrice,
       quantity,
       total,
-      address
+      address,
+      isAddressAvailable
     });
   }
 
