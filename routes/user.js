@@ -25,6 +25,7 @@ const Address = require("../model/address");
 const Useraddress = require("../model/userAddress");
 const Banner = require("../model/banner");
 const Category = require('../model/category');
+const Subcategory = require('../model/subCategory');
 router.use(methodOverride("_method"));
 
 const otpController = require("../controller/user/otpController");
@@ -205,17 +206,13 @@ router.get("/category/:id", async (req, res) => {
   const { id } = req.params;
   const category = await Category.findOne({category:id});
   const catList = await Product.find({ category: id});
-  const lToH = await Product.find({ category:id}).sort({
-    price: 1,
-  });
-  const hToL = await Product.find({ category: { $regex: id } }).sort({
-    price: -1,
-  });
   const totalProducts = await Product.countDocuments({
     category: { $regex: id },
   });
   console.log('id=',category);
-  res.render("home/categoryList", { catList, id, totalProducts, lToH, hToL,category });
+  const catid = category._id;
+  const subcategories = await Subcategory.find({categoryId:catid});
+  res.render("home/categoryList", { catList, id, totalProducts,category,subcategories});
 });
 router.get("/logout", (req, res, next) => {
   // req.logout((err) => {

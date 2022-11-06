@@ -1,5 +1,6 @@
 const Product = require('../../model/products');
 const Category = require('../../model/category');
+const Subcategory = require('../../model/subCategory');
 
 module.exports.baseLoad = async(req,res,next)=>{
     const {cat}=req.body;
@@ -21,4 +22,16 @@ module.exports.priceHL = async(req,res,next)=>{
         price: -1,
       });
       res.json({hToL});
+}
+module.exports.latest= async(req,res,next)=>{
+    const {cat} = req.body;
+    const latest = await Product.find({category:cat}).sort({
+        createdAt:-1
+    });
+    res.json({latest});
+}
+module.exports.updateByCheck = async(req,res,next)=>{
+    const {subid} = req.body;
+    const updatedProducts = await Product.find({subcategory:subid});
+    res.json({updatedProducts});
 }

@@ -10,4 +10,6 @@ router.post("/infinitescroll", onloadController.infiniteScroll);
 router.post('/category',filterController.baseLoad)
 router.post('/pricelh',filterController.priceLH)
 router.post('/pricehl',filterController.priceHL)
+router.post('/latestcat',filterController.latest)
+router.post('/checkupdate',filterController.updateByCheck)
 module.exports = router;
