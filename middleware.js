@@ -3,8 +3,8 @@ const {reviewSchema} = require('./schema');
 const ExpressError = require('./utils/ExpressError');
 
 module.exports.isLoggedIn = (req,res,next)=>{
-    if(req.isAuthenticated()||req.session.otpVerified){
-        console.log(req.user);
+    if(req.session.otpVerified||req.session.userVerified){
+        console.log(req.session.username);
         next();
     }
     else

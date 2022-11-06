@@ -2,20 +2,27 @@
 <div class="p-5 m-5">
     <div class="my-5">
 <form action="/admin/createsub" method="post" class="needs-validation" novalidate>
-    <label for="subcategory">Create Sub Category:</label>
-    <input type="text" name="subcategory" id="subcategory" required>
-    <label for="categoryId">Choose a Category:</label>
-        <select name="categoryId" id="categoryId">
-            <% for(let c of category){ %> 
-            <option name="categoryId" value="<%= c._id %>"><%= c.category %></option>
-            <% } %> 
-        </select>
-    <button class="btn btn-primary">Submit</button>
+    <div class="row">
+        <div class="col-6 mb-3 ">
+            <label for="subcategory">Create Sub Category:</label>
+            <input type="text" class="form-control" name="subcategory" id="subcategory" required>
+        </div>
+        <div class="col-6 mb-3 ">
+            <label for="categoryId">Choose a Category:</label>
+            <select class="form-control" name="categoryId" id="categoryId">
+                <% for(let c of category){ %> 
+                <option name="categoryId" value="<%= c._id %>"><%= c.category %></option>
+                <% } %> 
+            </select>
+        </div>
+        <div class="col-6 mb-3 ">
+            <button class="btn btn-primary">Submit</button>
+        </div>
 </form>
 </div>
 
 
-<table id="categoryList" class="display table table-secondary">
+<table id="categoryList" class="display text-center table table-secondary">
     <thead>
         <tr>
             <th> Number </th>
@@ -32,12 +39,15 @@
             <td><%= i+1 %> </td>
             <td><%= subcategory[i].category[0].category %> </td>
             <td><%= subcategory[i].subcategory %> </td>
+            <% if(!subcategory[i].isDeleted){%> 
             <td><a href="/admin/subcategory/<%=subcategory[i]._id %>" class="btn btn-warning">Edit</a></td>
             <td><form action="/admin/subcategory/<%=subcategory[i]._id %>?_method=DELETE" method="post">
                 <button type="submit" class="btn btn-danger" onclick="return confirm('Do you wann Delete this SubCategory.')">Delete</button>
                 </form>
             </td>
-            
+            <% }else{%> 
+                <td colspan="=2">This SubCategory doest exist</td>
+            <% } %> 
             
         </tr>
         <% } %> 

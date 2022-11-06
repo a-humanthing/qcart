@@ -10,7 +10,15 @@ const subCategorySchema = new Schema({
    delStatus:{
       type:Boolean,
       default:true
+   },
+   availableProduct:{
+      type:Number,
+      default:0
+   },
+   isDeleted:{
+      type:Boolean,
+      default:false
    }
-})
+},{timestamps:true});
 
 module.exports = mongoose.model('Subcategory',subCategorySchema);

@@ -9,7 +9,19 @@ const categorySchema = new Schema({
    delStatus:{
       type:Boolean,
       default:true
+   },
+   image:{
+         url:String,
+         filename:String
+   },
+   availableProducts:{
+      type:Number,
+      default:0
+   },
+   isDeleted:{
+      type:Boolean,
+      default:false
    }
-})
+},{timestamps:true});
 
 module.exports= mongoose.model('Category',categorySchema);

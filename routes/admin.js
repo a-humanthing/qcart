@@ -87,7 +87,7 @@ router.get('/products/:id/update',admin,productController.renderUpdateForm)
 router.put('/products/:id/update',admin,upload.array('image'),productController.updateProduct)
 
 router.get('/category',admin,categoryController.showAllCategories)
-router.post('/createcategory',admin,categoryController.createCategory)
+router.post('/createcategory',admin,upload.single('image'),categoryController.createCategory)
 router.get('/category/:id',admin, categoryController.showSingleCategory)
 
 router.delete('/category/:id',admin,categoryController.deleteCategory)

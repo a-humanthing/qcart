@@ -46,7 +46,7 @@ module.exports.viewCheckout = async (req, res, next) => {
     const useraddress = await Useraddress.findOne({ user }).populate("address");
     let address;
     let isAddressAvailable;
-    if(useraddress.length<1){
+    if(useraddress===null){
       address=[];
       isAddressAvailable=false;
     }else {

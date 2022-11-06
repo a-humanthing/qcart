@@ -2,7 +2,6 @@ const Wishlist = require("../../model/wishlist");
 const Product = require("../../model/products");
 
 module.exports.viewWishlist = async (req, res, next) => {
-    //const id = req.user._id;
     const id = req.session.user;
     try {
       const wishList = await Wishlist.findOne({ user: id })
@@ -26,7 +25,7 @@ module.exports.viewWishlist = async (req, res, next) => {
 
 module.exports.addToWishlist = async (req, res, next) => {
     const { proid } = req.params;
-    const user = req.user._id;
+    const user = req.session.user;
     let wishlistExist = await Wishlist.findOne({ user });
     if (wishlistExist) {
       //console.log('product exists==',wishlistExist.product.includes(proid));
@@ -49,7 +48,7 @@ module.exports.addToWishlist = async (req, res, next) => {
 
 module.exports.removeFromWishlist = async (req, res, next) => {
     const { proid } = req.params;
-    const user = req.user._id;
+    const user = req.session.user;
     try {
       let wishList = await Wishlist.findOne({ user });
       const itemIndex = wishList.product.indexOf(proid);

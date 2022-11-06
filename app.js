@@ -35,8 +35,8 @@ db.once('open',()=>{
 })
 app.use(express.static(path.join(__dirname,'public')))
 
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
 
 
 const sessionConfig = {
@@ -69,10 +69,10 @@ app.use(mongoSanitize());
 app.use(session(sessionConfig));
 app.use(flash());
 
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()))
-//passport.use(new LocalStrategy(Admin.authenticate()))
+// app.use(passport.initialize());
+// app.use(passport.session());
+// passport.use(new LocalStrategy(User.authenticate()))
+
 
 
 

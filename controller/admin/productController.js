@@ -10,8 +10,9 @@ module.exports.showAllProducts = async(req,res)=>{
 
 module.exports.renderAddProductForm = async(req,res)=>{
     const category = await Category.find({});
-    const subcategory = await Subcategory.find({});
-    const arrayOfDropdown = await Subcategory.aggregate([{$match:{"subcategory":1,}},{$lookup:{from:'categories',localField:'categoryId',foreignField:'_id',as:'category'}}]);
+    const subcategory = await Subcategory.find({isDeleted:false});
+    const arrayOfDropdown = await Subcategory.aggregate([{$match:{"subcategory":1}},{$lookup:{from:'categories',localField:'categoryId',foreignField:'_id',as:'category'}}]);
+    console.log('arraydrop=',subcategory);
     res.render('admin/createProduct',{category,subcategory});
 }
 
@@ -21,7 +22,8 @@ module.exports.addProduct = async (req,res,next)=>{
     const productId = product._id;
     product.image = req.files.map(f =>({ url: f.path, filename: f.filename }))
     await product.save();
-    const subcategory = await Subcategory.findByIdAndUpdate(productId,{delStatus:'false'})
+    const subcategory = await Subcategory.findByIdAndUpdate({_id:productId},{delStatus:'false'},{$inc:{"availableProduct":1}});
+    console.log('subcount',subcategory);
     req.flash('success','Product Added Succesfully!');
     res.redirect(`/admin/products/${product._id}`);
 }
@@ -35,6 +37,7 @@ module.exports.showSingleProduct = async(req,res)=>{
  module.exports.deleteProduct = async(req,res)=>{
     const {id} = req.params;
     const deletedProduct = await Product.findByIdAndDelete(id);
+    const subcategory = await Subcategory.findByIdAndUpdate({productId:id},{delStatus:'false'},{$inc:{availableProduct:1}})
     console.log(deletedProduct);
     req.flash('success','Product succesfully Deleted');
     res.redirect('/admin/products')

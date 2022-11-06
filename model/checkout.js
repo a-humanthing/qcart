@@ -37,5 +37,5 @@ const checkoutSchema= new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Address"
     }
-})
+},{timestamps:true});
 module.exports = mongoose.model('Checkout',checkoutSchema);

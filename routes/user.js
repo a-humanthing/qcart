@@ -23,12 +23,13 @@ const Wishlist = require("../model/wishlist");
 const methodOverride = require("method-override");
 const Address = require("../model/address");
 const Useraddress = require("../model/userAddress");
-const Banner = require('../model/banner');
+const Banner = require("../model/banner");
+const Category = require('../model/category');
 router.use(methodOverride("_method"));
 
 const otpController = require("../controller/user/otpController");
-const profileController = require('../controller/user/profileController');
-const addressController = require('../controller/user/addressController');
+const profileController = require("../controller/user/profileController");
+const addressController = require("../controller/user/addressController");
 
 //nodemailer things
 const transporter = nodemailer.createTransport({
@@ -70,34 +71,33 @@ const sendOtpVerificationEmail = async (req, res, next) => {
   }
 };
 
-router.get('/registerotp',async(req,res)=>{
-  res.render('users/registerOtp')
-})
+router.get("/registerotp", async (req, res) => {
+  res.render("users/registerOtp");
+});
 router.get("/register", (req, res) => {
   const email = req.session.emailUsed;
-  res.render("users/register",{email});
+  res.render("users/register", { email });
 });
-router.post('/generateotp',otpController.sendOtp)
-router.post('/verifyotp',otpController.verifyOtp)
+router.post("/generateotp", otpController.sendOtp);
+router.post("/verifyotp", otpController.verifyOtp);
 router.post(
   "/register",
   userJoiValidation,
   asyncErrorCatcher(async (req, res, next) => {
     try {
       const { email, username, password, phone } = req.body;
-      const user = new User({ email, username, phone });
-      console.log('u',user);
-      const registerUser = await User.register(user, password);
-      console.log(registerUser);
-      req.login(registerUser, (err) => {
-        if (err) return next(err);
-        req.session.username = username;
-        req.session.user = user._id;
-        req.flash("success", "Welcome to Qcart ", req.body.username);
-        return res.redirect("/user/home");
-      });
+      //const registerUser = await User.register(user, password);
+      const hash=await bcrypt.hash(password,10);
+      const user = new User({ email, username,phone,password:hash });
+      await user.save();
+      console.log("u", user);
+      req.session.username = username;
+      req.session.user = user._id;
+      req.session.userVerified=true;
+      req.flash("success", "Welcome to Qcart ", req.body.username);
+      return res.redirect("/user/home");
     } catch (e) {
-      console.log(e.stack)
+      console.log(e.stack);
       req.flash("error", `${e.message}`);
       return res.redirect("/user/register");
     }
@@ -105,93 +105,107 @@ router.post(
 );
 
 router.get("/login", (req, res) => {
-  if (req.user || req.session.otpVerified) {
+  if (req.session.userVerified || req.session.otpVerified) {
     return res.redirect("/user/home");
   }
   res.render("users/login");
 });
 router.post(
   "/login",
-  passport.authenticate("local", {
-    failureFlash: true,
-    failureRedirect: "/user/login",
-  }),
-  async(req, res) => {
-    const {username}=req.body;
-    const user = await User.findByUsername(username)
-    console.log(user._id)
-    res.locals.UserId = req.user.username;
-    req.session.username = req.body.username;
-    req.session.user = user._id;
-    const cartFull = await Cart.findOne({ user: user._id }).populate({
-      path: "user",
-      path: "cartItem",
-      populate: { path: "product" },
-    });
-    if(cartFull){
-      const cart = cartFull.cartItem;
-      req.session.cartcount=cart.length;
-    }
-    else{
-      req.session.cartcount=0;
-    }
-    console.log(cartFull)
+  async (req, res) => {
+    const { email,password } = req.body;
+    const user = await User.findOne({email});
+    if(user===null)return res.redirect('/user/login');
+    console.log('loguser',user);
+    const verifyPassword = await bcrypt.compare(password,user.password);
+    if(verifyPassword){
+      res.locals.UserId = user.username;
+      req.session.username = user.username;
+      req.session.user = user._id;
+      req.session.userVerified=true
+      const cartFull = await Cart.findOne({ user: user._id }).populate({
+        path: "user",
+        path: "cartItem",
+        populate: { path: "product" },
+      });
+      if (cartFull) {
+        const cart = cartFull.cartItem;
+        req.session.cartcount = cart.length;
+      } else {
+        req.session.cartcount = 0;
+      }
+      console.log(cartFull);
   
-    req.flash("success", "Welcome back");
-    res.redirect("/user/home");
+      req.flash("success", `Welcome back ${user.username}`);
+      res.redirect("/user/home");
+    }else{
+      req.flash('error','Incorrect Username Or Password');
+      res.redirect('/user/login');
+    }
   }
 );
 
-router.get("/otplogin",otpController.renderOtpForm);
-router.post("/otplogin", sendOtpVerificationEmail,otpController.otpLogin );
+router.get("/otplogin", otpController.renderOtpForm);
+router.post("/otplogin", sendOtpVerificationEmail, otpController.otpLogin);
 //Otp login has to reworked to
-router.post("/otpcomp", otpController.validateOtp );
+router.post("/otpcomp", otpController.validateOtp);
 // removed isLoggedIn for otp verification,isActive,
-router.get("/home",  async (req, res) => {
+router.get("/home", async (req, res) => {
   const product = await Product.find({});
   let banners = await Banner.find({});
-  console.log('user bans==',banners)
-  if(banners.length<1){
-    banners=[{
-      bannerName: 'Home Banner',
-      mainHeading: 'New Season ',
-      subHeading: 'Offer Closes Soon',
-      description: 'Buy Every Trendy Pieces At A Surprising Price!!',
-      image: [ {url:'https://res.cloudinary.com/dsehj85r6/image/upload/v1666757490/Qcart/yvpa5brqtvobkkle09us.webp',
-        filenam:'Qcart/jxc1wbpk77beculapifn'} ]
-    }
-  ]
+  const categoriesOfMonth = await Category.find().sort({createdAt:-1}).limit(4);
+  console.log("user bans==", banners);
+  if (banners.length < 1) {
+    banners = [
+      {
+        bannerName: "Home Banner",
+        mainHeading: "New Season ",
+        subHeading: "Offer Closes Soon",
+        description: "Buy Every Trendy Pieces At A Surprising Price!!",
+        image: [
+          {
+            url: "https://res.cloudinary.com/dsehj85r6/image/upload/v1666757490/Qcart/yvpa5brqtvobkkle09us.webp",
+            filename: "Qcart/jxc1wbpk77beculapifn",
+          },
+        ],
+      },
+    ];
   }
   const user = req.session.user;
-  if(user){
-
-      const cart = new Cart({ user });
-      const wishlist = new Wishlist({ user});
-        await cart.save();
-        await wishlist.save();
+  if (user) {
+    const cart = new Cart({ user });
+    const wishlist = new Wishlist({ user });
+    await cart.save();
+    await wishlist.save();
   }
-  console.log('bannerhome',banners)
-  res.render("home/home", { product,banners  });
+  console.log("bannerhome", categoriesOfMonth);
+  res.render("home/home", { product, banners,categoriesOfMonth});
 });
 
-router.get("/profile", isLoggedIn,profileController.showProfile);
-router.get("/profile/info",isLoggedIn,profileController.showProfileInfo);
-router.get("/profile/info/edit", isLoggedIn,profileController.renderProfileUpdateForm);
+router.get("/profile", isLoggedIn, profileController.showProfile);
+router.get("/profile/info", isLoggedIn, profileController.showProfileInfo);
+router.get(
+  "/profile/info/edit",
+  isLoggedIn,
+  profileController.renderProfileUpdateForm
+);
 router.put(
-  "/profile/info/edit",isLoggedIn,
+  "/profile/info/edit",
+  isLoggedIn,
   asyncErrorCatcher(profileController.updateProfile)
 );
-router.get("/address",isLoggedIn,addressController.showAllAddress );
-router.get('/new/address',isLoggedIn,addressController.renderAddressForm)
-router.post('/new/address',isLoggedIn,addressController.addAddress)
-router.get('/address/:id',isLoggedIn,addressController.showSingleAddress);
+router.get("/address", isLoggedIn, addressController.showAllAddress);
+router.get("/new/address", isLoggedIn, addressController.renderAddressForm);
+router.post("/new/address", isLoggedIn, addressController.addAddress);
+router.get("/address/:id", isLoggedIn, addressController.showSingleAddress);
 
-router.put('/address/:id',isLoggedIn,addressController.updateAddress);
-router.delete('/address/:id',isLoggedIn,addressController.deleteAddress)
+router.put("/address/:id", isLoggedIn, addressController.updateAddress);
+router.delete("/address/:id", isLoggedIn, addressController.deleteAddress);
 router.get("/category/:id", async (req, res) => {
   const { id } = req.params;
-  const catList = await Product.find({ category: { $regex: id } });
-  const lToH = await Product.find({ category: { $regex: id } }).sort({
+  const category = await Category.findOne({category:id});
+  const catList = await Product.find({ category: id});
+  const lToH = await Product.find({ category:id}).sort({
     price: 1,
   });
   const hToL = await Product.find({ category: { $regex: id } }).sort({
@@ -200,17 +214,21 @@ router.get("/category/:id", async (req, res) => {
   const totalProducts = await Product.countDocuments({
     category: { $regex: id },
   });
-  console.log(id);
-  res.render("home/categoryList", { catList, id, totalProducts, lToH, hToL });
+  console.log('id=',category);
+  res.render("home/categoryList", { catList, id, totalProducts, lToH, hToL,category });
 });
-router.get("/logout",isLoggedIn, (req, res, next) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
+router.get("/logout", (req, res, next) => {
+  // req.logout((err) => {
+  //   if (err) {
+  //     return next(err);
+  //   }
+    //req.session.userVerified=false
+    console.log('logout')
     req.flash("success", "logged out");
+    delete req.session.userVerified;
+    delete req.session.user
+    delete req.session.username
     res.redirect("/user/login");
-  });
 });
 
 module.exports = router;
