@@ -12,10 +12,16 @@
 
                 <h1 class="h2 pb-4 text-success">Categories</h1>
                 <ul class="list-unstyled templatemo-accordion">
+                    <div class="form-check pb-3">
+                        <input class="form-check-input" type="radio"  name="radio" onclick="latest('<%= category.category%>')"  id="check">
+                        <label class="form-check-label" for="check">
+                            All
+                        </label>
+                    </div>
                     <% for(let sub of subcategories){ %> 
                         <li class="pb-3">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" onchange="updateItems('<%=sub._id%>')"  id="check<%=sub._id%>">
+                                <input class="form-check-input" type="radio"  name="radio" onchange="updateItems('<%=sub._id%>')"  id="check<%=sub._id%>">
                                 <label class="form-check-label" for="check<%=sub._id%>">
                                 <%=sub.subcategory %> 
                                 </label>

@@ -1,37 +1,76 @@
 <% layout('/layouts/newbp') %> 
-<div class="p-5">
-<h1>Edit Products</h1>
-<form action="/admin/products/<%= product._id %>/update?_method=PUT" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
+<div class="p-5 col-6">
+<h1>Update Products</h1>
+<form action="/admin/products/<%=product._id %>/update?_method=PUT" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
     <div class="mb-3">
         <label class="form-label" for="productname">Product Name</label>
-        <input class="form-control" type="text" id="productname" value="<%= product.productname %>" name="productname" required>
+        <input class="form-control" type="text" value="<%=product.productname %> " id="productname" name="productname" required>
     </div>
     <div class="mb-3">
-        <label class="form-label" for="category">Category</label>
-        <input class="form-control" type="text" id="category" name="category" value="<%= product.category %>" required>
+        <label class="form-label" for="category">Category:</label>
+        <select class="form-control" name="category" id="categoryId"  required>
+            <option value="<%=product.category %>"><%=product.category %></option>
+        </select>
+        <!-- <input class="form-control" type="text" id="category" name="category" required> -->
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="subcategory">Sub Category:</label>
+        <div id="subcategoryId">  
+            <select id="subCategoryId" name="subcategory" class="form-control" required>
+                <option  disabled>Choose a category</option>
+            </select>
+        </div>
+
     </div>
     <div class="mb-3">
         <label class="form-label" for="description">Description</label>
-        <input class="form-control" type="text" id="description" name="description" value="<%= product.description %>" required>
+        <input class="form-control" value="<%=product.description %>" type="text" id="description" name="description" required>
     </div>
     <div class="mb-3">
         <label class="form-label" for="price">Price</label>
-        <input class="form-control" type="number" id="price" class="price" name="price" value="<%= product.price %>" required>
+        <input class="form-control" value="<%=product.price%>" type="number" id="price" class="price" name="price" required>
     </div>
     <p class="span"></p>
     <div class="mb-3">
-        <label class="form-label" for="quantity">Quantity</label>
-        <input class="form-control" type="number" id="quantity" name="quantity" value="<%= product.quantity %>" required>
-    </div>
-    <div class="mb-3">
         <label class="form-label" for="stock">Stock</label>
-        <input class="form-control" type="number" id="stock" name="stock" value="<%= product.stock %>" required>
+        <input class="form-control" value="<%=product.stock %>" type="number" id="stock" name="stock" required>
     </div>
     <div class="mb-3">
         <label class="form-label" for="image">Image</label>
-        <input type="file" id="image" name="image" multiple>
+        <input class="form-control" value="<%=product.image %>" type="file" name="image" id="image" multiple >
     </div>
+      
+    <!-- <div class="mb-3">
+        <label class="form-label" for="image">Image</label>
+        <input class="form-control" type="text" id="image" name="image" required>
+    </div> -->
    
-    <button class="btn btn-primary" onclick="check()">Submit</button>
+    <button class="btn btn-primary" type="submit" >Submit</button>
 </form>
 </div>
+<script>
+    window.onload = (e) => {
+    const category = document.getElementById("categoryId");
+    let categoryId = category.value;
+    const subCategoryField = document.getElementById('subcategory');
+    let option = '';
+    fetch('/loadsubcategory', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ categoryId })
+    }).then(res => res.json()).then(data => {
+        let subCategory = data.subcategories;
+        if (subCategory.length > 0) {
+            option += `<select id="subCategoryId" name="subcategory" class="form-control">`;
+            subCategory.forEach((eachSubCategory) => {
+                option += `<option value="${eachSubCategory._id}">${eachSubCategory.subcategory}</option>`;
+            });
+            option += `</select>`;
+            subcategoryId.innerHTML = option;
+        } else {
+            subcategoryId.innerHTML = `<select id="subCategoryId" name="subcategory" class="form-control"><option  disabled>Choose..</option></select>`;
+        }
+
+    })
+}
+</script>

@@ -45,16 +45,18 @@ module.exports.showSingleProduct = async(req,res)=>{
 
 module.exports.renderUpdateForm = async(req,res)=>{
     const {id} = req.params;
+    const category = await Category.find({});
+    const subcategory = await Subcategory.find({isDeleted:false});
     const product = await Product.findById(id);
-    res.render('admin/updateProduct',{product})
+    res.render('admin/updateProduct',{product,category,subcategory})
 }
 
-module.exports.updateProduct = async(req,res)=>{
+module.exports.updateProduct = async(req,res,next)=>{
     const {id} = req.params;
     const product= await Product.findByIdAndUpdate(id,{...req.body});
-    const images = req.files.map(f =>({ url: f.path, filename: f.filename }));
-    console.log(product);
-    product.image.push(...images);
+    //const images = req.files.map(f =>({ url: f.path, filename: f.filename }));
+    console.log('cas',product);
+    //product.image.push(...images);
     await product.save();
     req.flash('success',' Product Updated Succesfully !')
     res.redirect(`/admin/products/${product._id}`);

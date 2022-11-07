@@ -5,12 +5,10 @@ const Subcategory = require('../../model/subCategory');
 module.exports.baseLoad = async(req,res,next)=>{
     const {cat}=req.body;
     const baseLoad = await Product.find({category:cat}).limit(3);
-    console.log('reached',baseLoad)
     res.json({ baseLoad });
 }
 module.exports.priceLH=async(req,res,next)=>{
     const {cat}=req.body;
-    console.log('id',cat)
     const lToH = await Product.find({ category:cat}).sort({
         price: 1,
       });
@@ -34,4 +32,19 @@ module.exports.updateByCheck = async(req,res,next)=>{
     const {subid} = req.body;
     const updatedProducts = await Product.find({subcategory:subid});
     res.json({updatedProducts});
+}
+module.exports.searchProduct = async(req,res,next)=>{
+    const {keyword}=req.body;
+    console.log('key',keyword)
+    const matchedProduct = await Product.find({productname:new RegExp(keyword,'i')}).limit(3);
+    let id;
+    let notFound=false;
+    if(matchedProduct===null){
+        notFound=true
+    }
+    else{
+        console.log('match',matchedProduct);
+        id= matchedProduct._id;
+    }
+    res.json({matchedProduct,id,notFound});
 }

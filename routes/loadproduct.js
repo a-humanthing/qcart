@@ -12,4 +12,5 @@ router.post('/pricelh',filterController.priceLH)
 router.post('/pricehl',filterController.priceHL)
 router.post('/latestcat',filterController.latest)
 router.post('/checkupdate',filterController.updateByCheck)
+router.post('/search',filterController.searchProduct)
 module.exports = router;

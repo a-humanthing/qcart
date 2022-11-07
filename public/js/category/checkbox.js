@@ -1,7 +1,7 @@
 function updateItems(subid){
     const checkbox = document.getElementById(`check${subid}`);
     if(checkbox.checked){
-        fetch('/loadproducts/checkupdate',{
+        fetch('/loadproduct/checkupdate',{
             method:"POST",
             headers:{"Content-Type":"application/json"},
             body:JSON.stringify({subid})
@@ -10,6 +10,7 @@ function updateItems(subid){
         .then(data=>{
             const product = data.updatedProducts;
             const container = document.getElementById('catItems');
+            container.innerHTML='';
             //container.innerHTML
             for(let pro of product){
     
@@ -48,7 +49,7 @@ function updateItems(subid){
         })
     }
     else{
-        alert('no')
+        
     }
     
 }
