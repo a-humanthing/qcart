@@ -80,7 +80,7 @@ router.get("/register",isOtpRegistered, (req, res) => {
   const email = req.session.emailUsed;
   res.render("users/register", { email });
 });
-router.post("/generateotp",isOtpRegistered, otpController.sendOtp);
+router.post("/generateotp",otpController.sendOtp);
 router.post("/verifyotp", isOtpRegistered,otpController.verifyOtp);
 router.post(
   "/register",
