@@ -58,7 +58,6 @@ module.exports.deleteBanner = async(req,res,next)=>{
     // let item = banner.homeBanner[itemIndex];
     // banner.homeBanner.splice(itemIndex, 1);
     const bannerdel = await Banner.findByIdAndDelete(id);
-    console.log('item=',item);
     res.redirect('/admin/banner')
 }
 

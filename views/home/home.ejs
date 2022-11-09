@@ -8,9 +8,9 @@
     </ol>
     <div class="carousel-inner">
         
-        <% for(let i=0;i<1;i++){ %> 
-
-            <% if(i===0){ %> 
+        <% for(let banner of banners){ %> 
+            <% console.log(banners.indexOf(banner)) %> 
+            <% if(banners.indexOf(banner)===0){ %> 
         <div class="carousel-item active">
             <% }else{%> 
         <div class="carousel-item">
@@ -18,17 +18,25 @@
             <div class="container">
                 <div class="row p-5">
                     <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
-                        <% for(let img of banners[i].image ){ %> 
+                        <% for(let img of banner.image ){ %> 
                         <img class="content-cover" width="588px" height="588px" src="<%=img.url %>" alt="">
                         <% } %> 
                     </div>
                     <div class="col-lg-6 mb-0 d-flex align-items-center">
                         <div class="text-align-left">
-                            <h1 class="h1"><%= banners[i].mainHeading  %> </h1>
-                            <h3 class="h2"><%= banners[i].subHeading  %> </h3>
-                            <p>
-                                <%= banners[i].description  %> 
-                            </p>
+                            <% if(1+banners.indexOf(banner)%2==0){ %> 
+                            <h1 class="h1 text-primary" style="font-weight: bolder;"><%= banner.mainHeading  %> </h1>
+                            <h3 class="h2 text-danger"><%= banner.subHeading  %> </h3>
+                            <h5> 
+                                <%= banner.description  %> 
+                            </h5>
+                            <% }else{ %>
+                                <h1 class="h1 text-primary" style="font-weight: bolder;"><%= banner.mainHeading  %> </h1>
+                                <h3 class="h2"><%= banner.subHeading  %> </h3>
+                                <h5 class="text-danger" style="font-weight: bolder;"> 
+                                    <%= banner.description  %> 
+                                </h5>
+                            <% } %>  
                         </div>
                     </div>
                 </div>

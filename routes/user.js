@@ -154,10 +154,10 @@ router.post("/otpcomp", otpController.validateOtp);
 // removed isLoggedIn for otp verification,isActive,
 router.get("/home", async (req, res) => {
   const product = await Product.find({});
-  let banners = await Banner.find({});
+  let banners = await Banner.find({}).limit(4);
   const categoriesOfMonth = await Category.find().sort({createdAt:-1}).limit(4);
   console.log("user bans==", banners);
-  if (banners.length < 1) {
+  if(banners.length < 1) {
     banners = [
       {
         bannerName: "Home Banner",

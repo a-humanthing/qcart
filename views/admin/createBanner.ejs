@@ -5,22 +5,22 @@
     </div>
     <form action="/admin/banner/new" method="post" enctype="multipart/form-data">
         <div class="mb-3">
-            <input type="text" class="form-control" name="bannerName" placeholder="Enter Banner Name " id="bannerName"  required >
+            <input type="text" class="form-control" name="bannerName" placeholder="Enter Banner Name " id="bannerName"  required>
 
         </div>
      
         <div class="mb-3"  >
-            <input type="text" class="form-control" placeholder="Enter Main Heading" name="mainHeading" id="mainHeading"  >
+            <input type="text" class="form-control" placeholder="Enter Main Heading" name="mainHeading" id="mainHeading" required>
         </div>
         <div class="mb-3">
-            <input type="text" class="form-control" placeholder="Enter Sub Heading" name="subHeading" id="subHeading"  >
+            <input type="text" class="form-control" placeholder="Enter Sub Heading" name="subHeading" id="subHeading" required>
         </div>
         <div class="mb-3">
-            <input type="text" class="form-control" placeholder="Enter Description" name="description" id="description"  >
+            <input type="text" class="form-control" placeholder="Enter Description" name="description" id="description" required>
         </div>
         <div class="mb-3">
             <label class="form-label" for="image">Image</label>
-            <input class="form-control" type="file" name="image" id="image" multiple >
+            <input class="form-control" type="file" name="image" id="image" multiple required>
         </div>
         <div class="mb-3">
             <button type="submit" class="btn btn-success">Submit</button>
