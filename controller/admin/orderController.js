@@ -2,7 +2,8 @@ const User = require('../../model/user');
 const Order = require('../../model/order');
 
 module.exports.showAllOrders = async(req,res,next)=>{
-    const orders = await Order.find({}).populate('user')
+    const orders = await Order.find({}).populate('user');
+    console.log('o',orders);
     res.render('admin/orderlist',{orders});
  }
 
