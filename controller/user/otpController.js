@@ -23,7 +23,6 @@ module.exports.renderOtpForm = async(req, res, next) => {
 
 module.exports.sendOtp = async(req,res,next)=>{
     const {email} = req.body;
-    console.log('email',email);
     const checkEmail = await User.findOne({email:email});
     if(checkEmail!==null) return res.json({success:false});
     const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
@@ -34,9 +33,7 @@ module.exports.sendOtp = async(req,res,next)=>{
       html: `<p>Enter <b>${otp}</b> in the app to verify your email address and complete Verification</p>`,
     };
     const saltRounds = 10;
-    console.log('before bcrypt')
     const hashedOTP = await bcrypt.hash(otp, saltRounds);
-    console.log('after bcrypt');
     const newOtpVerification =  new Otp({
       email: email,
       otp: hashedOTP,

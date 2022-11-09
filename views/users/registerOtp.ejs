@@ -41,7 +41,6 @@
     const emailForm = document.getElementById('otpGenerator');
     emailForm.addEventListener('click',()=>{
         const email = document.getElementById('email').value;
-        alert(email);
         fetch('/user/generateotp', {
             method:"POST",
             headers:{"Content-Type":"application/json"},

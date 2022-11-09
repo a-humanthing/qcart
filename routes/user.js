@@ -81,7 +81,7 @@ router.get("/register",isOtpRegistered, (req, res) => {
   res.render("users/register", { email });
 });
 router.post("/generateotp",otpController.sendOtp);
-router.post("/verifyotp", isOtpRegistered,otpController.verifyOtp);
+router.post("/verifyotp",otpController.verifyOtp);
 router.post(
   "/register",
   userJoiValidation,
@@ -117,7 +117,10 @@ router.post(
   async (req, res) => {
     const { email,password } = req.body;
     const user = await User.findOne({email});
-    if(user===null)return res.redirect('/user/login');
+    if(user===null){
+      req.flash('error','Invalid Email');
+      return res.redirect('/user/login');
+    }
     console.log('loguser',user);
     const verifyPassword = await bcrypt.compare(password,user.password);
     if(verifyPassword){
@@ -141,7 +144,7 @@ router.post(
       req.flash("success", `Welcome back ${user.username}`);
       res.redirect("/user/home");
     }else{
-      req.flash('error','Incorrect Username Or Password');
+      req.flash('error','Incorrect Email Or Password');
       res.redirect('/user/login');
     }
   }
