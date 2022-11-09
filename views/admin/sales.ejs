@@ -6,17 +6,20 @@
         </div>
     </div>
     <form id="salesreport">
+        <div class="row justify-content-center">
+            <h3>View Sales Report</h3>
+        </div>
         <div class="row">
             <div class="col-4">
-                <label class="form-label" for="start">Start Date</label>
+                <label class="form-label" for="start">From Date</label>
                 <input type="date" name="start" id="start" class="form-control" required>
             </div>
             <div class="col-4">
-                <label class="form-label" for="end">End Date</label>
+                <label class="form-label" for="end">To Date</label>
                 <input type="date" name="end" id="end" class="form-control" required>
             </div>
             <div class="col-4">
-                <label class="form-label" for="category">Category</label>
+                <label class="form-label" for="category">View By</label>
                 <select class="form-control" id="criteria" required>
                     <% for(let cat of fields){ %> 
                         <option value="<%=cat%>"><%=cat%></option>
@@ -29,12 +32,28 @@
         </div>
     </form>
     <section>
+        <div class="row" id="downloadbutton" style="display: none;">
+            <button class="btn btn-info" onclick="ExportToExcel('xlsx')">Export Report to Excel</button>
+        </div>
         <div id="table">
             
         </div>
     </section>
 </div>
+<script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
 <script>
+
+    function ExportToExcel(type, fn, dl) {
+        var elt = document.getElementById('tbl_exporttable_to_xls');
+        var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+        return dl ?
+            XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+            XLSX.writeFile(wb, fn || ('MySheetName.' + (type || 'xlsx')));
+    }
+    
+</script>
+<script>
+
     const form = document.getElementById('salesreport');
     form.addEventListener('submit',(e)=>{
         e.preventDefault();
@@ -48,7 +67,7 @@
         document.getElementById('category').value;
         const category = document.getElementById('criteria').value;
         console.log(category)
-        fetch('/admin/salesreport',{
+        fetch( `/admin/sales/${category}`,{
             method:"POST",
             headers:{"Content-Type":"application/json"},
             body:JSON.stringify({startdate,lastdate,category})
@@ -62,13 +81,13 @@
                 const table = document.getElementById('table');
                 console.log('table',table);
                 let tableContent='';
-                tableContent=`<table class="table">
+                tableContent=`<table id="tbl_exporttable_to_xls" class="table">
                     <thead>
                         <tr>
                             <th>Sl No</th>
-                            <th>Order Id</th>
+                            <th>Id</th>
                             <th>Amount</th>
-                            <th>User</th>
+                            <th>By</th>
                         </tr>
                     </thead>
                 <tbody id="dataPart">`
@@ -77,11 +96,12 @@
                     count++;
                     console.log(order._id)
                     console.log(order.bill);
-                    tableContent+=`<tr><td>${count}</td><td>${order._id}</td><td>${order.bill}</td><td>${order.user[0].username}</td> </tr>` 
+                    tableContent+=`<tr><td>${count}</td><td>${order._id}</td><td>${order.sum}</td><td>${order.username}</td> </tr>` 
                  }
                  tableContent+=`</tbody></table>`;
                  console.log('content',tableContent)
                  table.innerHTML=tableContent;
+                 const button = document.getElementById('downloadbutton').style.display="block";
         })
         .catch(err=>{
 

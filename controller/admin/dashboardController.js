@@ -112,13 +112,42 @@ module.exports.generateReport = async(req,res,next)=>{
 }
 
 module.exports.userWiseReport = async(req,res,next)=>{
-
+    const {startdate,lastdate,category} = req.body;
+    const isoStart = new Date(startdate);
+    const isoEnd = new Date(lastdate);
+    console.log('iso',isoStart);
+    //{$lookup:{from:'users',localField:'user',foreignField:'_id',as:'user'}}
+    const genReport = await Order.aggregate([{$match:{createdAt:{$gte:isoStart,$lte:isoEnd}}},{$lookup:{from:'users',localField:'user',foreignField:'_id',as:'user'}},{$unwind:"$user"},{$group:{_id:"$user._id",sum:{$sum:"$bill"},username:{$first:"$user.username"}}}])
+    let usersales;
+    console.log(genReport);
+    res.json({genReport});
 }
 
 module.exports.categoryWiseReport = async(req,res,next)=>{
-
+    const {startdate,lastdate,category} = req.body;
+    const isoStart = new Date(startdate);
+    const isoEnd = new Date(lastdate);
+    console.log('iso',isoStart);
+    //{$lookup:{from:'users',localField:'user',foreignField:'_id',as:'user'}}
+    const genReport = await Order.aggregate([
+         {$match:{createdAt:{$gte:isoStart,$lte:isoEnd}}}
+        ,{$unwind:"$items"}
+        ,{$lookup:{from:'products',localField:'items.product',foreignField:'_id',as:'products'}}
+        ,{$unwind:"$products"}
+        ,{$group:{_id:"$products.category",sum:{$sum:"$bill"},username:{$first:"$products.category"}}}
+    ])
+    let usersales;
+    console.log(genReport);
+    res.json({genReport});
 }
 
 module.exports.overallReport = async(req,res,next)=>{
-    
+    const {startdate,lastdate,category} = req.body;
+    const isoStart = new Date(startdate);
+    const isoEnd = new Date(lastdate);
+    console.log('iso',isoStart);
+    const genReport = await Order.aggregate([{$match:{createdAt:{$gte:isoStart,$lte:isoEnd}}},{$group:{_id:"overall",sum:{$sum:"$bill"},username:{$first:"overall"}}}])
+    let usersales;
+    console.log(genReport);
+    res.json({genReport});
 }
