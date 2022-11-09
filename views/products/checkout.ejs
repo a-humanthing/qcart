@@ -3,17 +3,21 @@
 
   <div class="row justify-content-center">
     <div class="col-12 col-md-6 m-2 px-0 ">
+            <h3>Complete Checkout Process</h3>
+                <ul class="list-group list-group-horizontal">
+                    <li class="list-group-item ">Step 1</li>
+                    <li class="list-group-item bg-success">Step 2</li>
+                    <li class="list-group-item">Step 3</li>
+                    <li class="list-group-item">Step 4</li>
+                </ul>
+        
+    </div>
+    <div class="col-12 col-md-6 m-2 px-0 ">
 
-        <div class="row text-center">
-            <div class="col-12 ">
-                <h3>Complete Checkout Process</h3>
-            </div>
-        </div>
-
-        <div class="card bg-success shadow-sm mb-3 p-3">
+        <div class="card shadow-sm mb-3 p-3">
             <div class="row ">
                 <div class="col-6 fw-bold">
-                    1. Login
+                    <h4 class="text-success">1. Login</h4>
                         <h5 class="ms-3"><%=username %> </h5>
                         
                 </div>
@@ -26,11 +30,10 @@
             <div class="mb-3 p-3  shadow-sm card">
                 <div class="row ">
                     <div class="ps-2 col-12  pb-2 mb-3 border-bottom text-success fw-bold">
-                    2. Delivery Address
+                    <h4 class="text-success">2. Delivery Address</h4>
                     </div>
                     <div class="col-8 pb-2  ">
-                
-                        <% let i=0; %> 
+
             <form action="/product/selectaddress" method="post">
                 <% for(let add of address){ %> 
                 <div class="mb-3">
@@ -58,10 +61,10 @@
             </div>
         </div>
         <div class="mb-3 shadow-sm p-2 card text-success fw-bold">
-           3. Order Summary
+           <h4>3. Order Summary</h4>
         </div>
         <div class="mb-3 shadow-sm p-2 card text-success fw-bold">
-           4. Payment Options
+           <h4> 4. Payment Options</h4>
         </div>
     </div>
     <div class="col-12 col-md-3 m-2 py-2 card" style="height: 15vmax;">

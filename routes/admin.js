@@ -74,6 +74,14 @@ router.get('/dashboard/weeksale',dashController.sendSalesData)
 
 router.get('/dashboard/comparemethod',dashController.sendMethodData)
 
+router.get('/sales',dashController.renderSales)
+
+router.post('/salesreport',dashController.generateReport)
+
+router.post('/sales/userwise',dashController.userWiseReport);
+router.post('/sales/categorywise',dashController.categoryWiseReport);
+router.post('/sales/overall',dashController.overallReport);
+
 router.get('/products',admin,productController.showAllProducts);
 
 router.get('/products/new',admin,productController.renderAddProductForm)

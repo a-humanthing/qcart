@@ -16,45 +16,42 @@
     </div>
 </form>
 
-    <div class="row justify-content-center">
-        <div class="col-10 ">
-            <table id="categoryList" class="display text-center table table-secondary">
-                <thead>
-                    <tr>
-                        <th> Number </th>
-                        <th>Category</th>
-                        <th>Image</th>
-                        <th colspan="2" class="text-center">Action</th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                <% for(let i=0;i<categories.length;i++){ %> 
-                    <tr>
-                       
-                        <td><%= i+1 %> </td>
-                        <td><%= categories[i].category %> </td>
-                        <td><img src="<%=categories[i].image.url %>" alt=""></td>
-                        <% if(!categories[i].isDeleted){%> 
-                        <td><a href="/admin/category/<%=categories[i]._id %>" class="btn btn-warning">Edit</a></td>
-                        <td><form action="/admin/category/<%=categories[i]._id %>?_method=DELETE" method="post">
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Do you wann Delete this Category.')">Delete</button>
-                            </form>
-                        </td>
-                        <% }else{ %> 
-                            <td colspan="2">This Category Does not exists.</td>
-                        <% } %> 
-                    </tr>
-                    <% } %> 
-                </tbody>
-            </table>
-        </div>
-    </div>
+<table id="categoryList" class="display table table-secondary">
+    <thead>
+        <tr>
+            <th> Number </th>
+            <th>Category</th>
+            <th>Image</th>
+            <th >Edit</th>
+            <th>Delete</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+    <% for(let i=0;i<categories.length;i++){ %> 
+        <tr>
+           
+            <td><%= i+1 %> </td>
+            <td><%= categories[i].category %> </td>
+            <td><img src="<%=categories[i].image.url %>" alt=""></td>
+            
+            <td><a href="/admin/category/<%=categories[i]._id %>" class="btn btn-warning">Edit</a></td>
+            <td><form action="/admin/category/<%=categories[i]._id %>?_method=DELETE" method="post">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Do you wann Delete this Category.')">Delete</button>
+                </form>
+            </td>
+           
+          
+        </tr>
+        <% } %> 
+    </tbody>
+</table>          
+
 </div>
 <script type="text/javascript" charset="utf8"
-src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js"></script>
+    src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js"></script>
 <script type="text/javascript" charset="utf8"
-src="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+    src="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
 <script>
 $(function () {
     $("#categoryList").dataTable();

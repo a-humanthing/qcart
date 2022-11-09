@@ -1,0 +1,149 @@
+<% layout('/layouts/userbp') %>
+<div id="bill" class="d-none">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-9 mb-4">
+            <h4 class="text-success text-center">Qcart</h4>
+        </div>
+        <div class="col-12 col-md-9 p-2 mb-4 border-bottom">
+            Sold By:Qcart Private Limited <br>
+            ship-from:Calicut Hilite Business Park <br>
+            Kerala, India - 673014
+        </div>
+        <div class="col-12 col-md-9 p-2 mb-4 border-bottom">
+            Order id: <%=order._id %> <br>
+            Order Date: <%=orderDate %> <br>
+            Bill To: <b> <%=order.address.name %></b><br>
+            <%=order.address.address %><br>
+            <%=order.address.cityDistrictTown %> District -
+            <%=order.address.pincode %>, 
+            <%=order.address.state %> 
+            <p>Mobile</p>
+            <%=order.address.mobile %>  
+        </div>
+    </div>
+    <div class="row m-3">
+        <table border="1">
+            <tr>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Amount</th>
+            </tr>
+            <% for(let i of order.items){ %>
+                <tr>
+                    <td><%=i.product.productname %> </td>
+                    <td><%=i.quantity %> </td>
+                    <td><%=i.product.price %> </td>
+                </tr>
+            <% } %> 
+            <tr>
+                <td>Total</td>
+                <td><%=order.items.length %> </td>
+                <td><%=order.bill %> </td>
+            </tr>  
+        </table>
+    </div>
+    <div class="row justify-content-center" >
+        <div class="col-12 col-md-9 p-2 mb-4 border-bottom" >
+            Grand Total = <b><%=order.bill %> </b><br>
+            Qcart Limited <br>
+            Authorized Signatory
+        </div>
+    </div>
+</div>
+
+<section class="py-5">
+    <div id="dummybill" class="">
+        <div class="row justify-content-center">
+            <div class="col-4">
+                <h4 class="text-primary">
+                    Order id: <%=order._id %> 
+                </h4>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-9 mb-4">
+                <div class="card mb-5 p-3">
+                     <div class="row align-items-center">
+                        <div class="col-md-3 border-end">
+                            <p>Delivery Address</p>
+                            <%=order.address.name %><br>
+                            <%=order.address.address %><br>
+                            <%=order.address.cityDistrictTown %> District -
+                            <%=order.address.pincode %>, 
+                            <%=order.address.state %> 
+                            <p>Mobile</p>
+                            <%=order.address.mobile %> 
+                            <% console.log(order.address) %> 
+                        </div>
+                        <div class="col-md-3 border-end">
+                            <p>Bill</p>
+                            <p>₹<%=order.bill %> </p>
+                        </div>
+                        <div class="col-md-3">
+                           <p> More Actions</p>
+                           <p>Download invoice</p>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-primary" onclick="downloadBill()">Download</button>
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-9 mb-4">
+                <div class="card mb-5 p-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 border-end" style="width:15rem;height:10rem;overflow:auto;">
+                        <% for(let item of order.items){ %> 
+                            <div class="scrollable" > 
+                            <% for(let img of item.product.image){%> 
+                                <img
+                                class="object-fit-content"
+                                width="100px"
+                                height="100px"
+                                src="<%= img.url %>"
+                                alt=""
+                                />
+                            <% } %> 
+                            <p><%=item.product.productname %> </p>
+                            </div>
+                        <% } %> 
+                        Payment Type: <b><%=order.paymentType %></b>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-group list-group-horizontal">
+                            <% for(let i=0;i<4;i++){ %> 
+                                <% if(order.orderStatus[0].type!=='cancelled'){ %> 
+                                    <% if(status[i]===order.orderStatus[0].type){ %> 
+                                        <li class="text-white bg-success list-group-item"><%=status[i] %></li>  
+                                    <% }else{ %> 
+                                        <li class="text-mute list-group-item"><%=status[i] %></li> 
+                                     <% } %> 
+                                <% }else{ %> 
+                                    <li class="text-white list-group-item bg-danger">Cancelled</li>
+                                <%} %> 
+                            <% } %> 
+                            </ul>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/product/<%=order.items[0].product._id %>/review" style="text-decoration: none;"> Rate & Review Product</a>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    function downloadBill(){
+        //document.getElementById('bill').contentWindow.print();
+
+        const bill = document.getElementById('bill');
+        html2pdf()
+        .from(bill)
+        .save();
+    }
+</script>

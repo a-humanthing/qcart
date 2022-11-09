@@ -21,6 +21,7 @@ const Checkout = require("../model/checkout");
 const Order = require("../model/order");
 const Coupon = require("../model/coupon");
 const { compileFunction } = require("vm");
+const asyncErrorCatcher = require("../utils/asyncErrorCatcher");
 
 const couponController = require("../controller/product/coupon");
 const cartController = require("../controller/product/cart");
@@ -33,51 +34,54 @@ const reviewController = require("../controller/product/review");
 
 router.use(methodOverride("_method"));
 
-router.get("/cart", isLoggedIn, cartController.viewCart);
+router.get("/cart", isLoggedIn, asyncErrorCatcher(cartController.viewCart));
 
-router.post("/cart/:id", isLoggedIn, cartController.addToCart);
-router.post("/reduceqty", cartController.reduceQty);
+router.post("/cart/:id", isLoggedIn, asyncErrorCatcher(cartController.addToCart));
+router.post("/reduceqty", asyncErrorCatcher(cartController.reduceQty));
 
-router.delete("/cart/:id", isLoggedIn, cartController.removeFromCart);
-router.post("/cart/remove/:id", cartController.removeAsynCart);
+router.delete("/cart/:id", isLoggedIn, asyncErrorCatcher(cartController.removeFromCart));
+router.post("/cart/remove/:id", asyncErrorCatcher(cartController.removeAsynCart));
 
-router.get("/wishlist", isLoggedIn, wishListController.viewWishlist);
-router.post("/wishlist/:proid", isLoggedIn, wishListController.addToWishlist);
+router.get("/wishlist", isLoggedIn, asyncErrorCatcher(wishListController.viewWishlist));
+router.post("/wishlist/:proid", isLoggedIn, asyncErrorCatcher(wishListController.addToWishlist));
 router.delete(
   "/wishlist/:proid",
   isLoggedIn,
-  wishListController.removeFromWishlist
+  asyncErrorCatcher(wishListController.removeFromWishlist)
 );
 
-router.get("/checkout", isLoggedIn, checkoutController.viewCheckout);
-router.post("/checkout", isLoggedIn, checkoutController.addToCheckout);
-router.get("/checkout/:id", checkoutController.singleCheckout);
-router.post("/selectaddress", checkoutController.selectAddress);
+router.get("/checkout", isLoggedIn, asyncErrorCatcher(checkoutController.viewCheckout));
+router.post("/checkout", isLoggedIn, asyncErrorCatcher(checkoutController.addToCheckout));
+router.get("/checkout/:id",isLoggedIn, asyncErrorCatcher(checkoutController.singleCheckout));
+router.post("/selectaddress",isLoggedIn, asyncErrorCatcher(checkoutController.selectAddress));
 
-router.get("/ordersummary", orderController.viewOrdersummary);
+router.get("/ordersummary",isLoggedIn, asyncErrorCatcher(orderController.viewOrdersummary));
 
-router.get("/payment", paymentController.viewPayment);
+router.get("/payment",isLoggedIn, asyncErrorCatcher(paymentController.viewPayment));
 
-router.post("/order", orderController.createOrder);
+router.post("/order",isLoggedIn, asyncErrorCatcher(orderController.createOrder));
 
-router.post("/verifypayment", paymentController.verifyPayment);
+router.post("/verifypayment",isLoggedIn, asyncErrorCatcher(paymentController.verifyPayment));
 
-router.get("/ordercompletion", orderController.showOrdercompletion);
+router.get('/orderinfo',isLoggedIn, asyncErrorCatcher(orderController.showOrderInfo))
 
-router.post("/coupon", couponController.applyCoupon);
-router.post("/setdiscount", couponController.setDiscount);
+router.get("/ordercompletion",isLoggedIn, asyncErrorCatcher(orderController.showOrdercompletion));
 
-router.get("/:proid/review", reviewController.renderReviewForm);
+router.post("/coupon",isLoggedIn, asyncErrorCatcher(couponController.applyCoupon));
+router.post("/setdiscount",isLoggedIn, asyncErrorCatcher(couponController.setDiscount));
+
+router.get("/:proid/review",isLoggedIn,asyncErrorCatcher(reviewController.renderReviewForm));
 router.post(
   "/:proid/review",
+  isLoggedIn,
   validateReviewSchema,
-  reviewController.postReview
+  asyncErrorCatcher(reviewController.postReview)
 );
 
-router.delete("/:proid/review/:revid", reviewController.deleteReview);
+router.delete("/:proid/review/:revid",isLoggedIn, asyncErrorCatcher(reviewController.deleteReview));
 
-router.delete("/order/:id", orderController.deleteOrder);
+router.delete("/order/:id",isLoggedIn, asyncErrorCatcher(orderController.deleteOrder));
 
-router.get("/:id", productviewController.showProduct);
+router.get("/:id", asyncErrorCatcher(productviewController.showProduct));
 
 module.exports = router;

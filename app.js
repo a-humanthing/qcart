@@ -1,7 +1,7 @@
 if(process.env.NODE_ENV !=="production"){
     require('dotenv').config();
 }
-const express = require('express');
+const express = require('express'); 
 const app = express();
 const path = require('path')
 const ejsMate = require('ejs-mate');
@@ -137,17 +137,13 @@ app.post('/loadsubcategory',async(req,res,next)=>{
 })
 
 app.all('*',(req,res,next)=>{
-    // res.status(404).send("Not found");
-    next(new ExpressError('page not Found',404));
+    next(new ExpressError('Page Not Found',404));
 })
 
 app.use((err,req,res,next)=>{
     const {status=500}=err;
-    // console.log(err);
-    if(!err.message) err.message="Ooops!"
+    if(!err.message) err.message="Ooops! Something Went Wrong."
     res.status(status).render('error',{err})
-    // res.status(status).send(message);
-    
 })
 
 

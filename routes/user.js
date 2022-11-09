@@ -7,6 +7,7 @@ const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const {
+  isOtpRegistered,
   isLoggedIn,
   isActive,
   userJoiValidation,
@@ -75,12 +76,12 @@ const sendOtpVerificationEmail = async (req, res, next) => {
 router.get("/registerotp", async (req, res) => {
   res.render("users/registerOtp");
 });
-router.get("/register", (req, res) => {
+router.get("/register",isOtpRegistered, (req, res) => {
   const email = req.session.emailUsed;
   res.render("users/register", { email });
 });
-router.post("/generateotp", otpController.sendOtp);
-router.post("/verifyotp", otpController.verifyOtp);
+router.post("/generateotp",isOtpRegistered, otpController.sendOtp);
+router.post("/verifyotp", isOtpRegistered,otpController.verifyOtp);
 router.post(
   "/register",
   userJoiValidation,
@@ -225,6 +226,7 @@ router.get("/logout", (req, res, next) => {
     delete req.session.userVerified;
     delete req.session.user
     delete req.session.username
+    delete req.session.otpRegistered
     res.redirect("/user/login");
 });
 

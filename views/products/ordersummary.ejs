@@ -1,12 +1,20 @@
 <% layout('/layouts/userbp') %>
 <div class="p-5" >
-  <h3>Order Summary</h3>
   <div class="row justify-content-center">
+    <div class="col-12 col-md-6 m-2 px-0">
+      <h3>Order Summary</h3>
+      <ul class="list-group list-group-horizontal">
+        <li class="list-group-item">Step 1</li>
+        <li class="list-group-item ">Step 2</li>
+        <li class="list-group-item bg-success">Step 3</li>
+        <li class="list-group-item">Step 4</li>
+    </ul>
+    </div>
     <div class="col-12 col-md-6 m-2 px-0">
       <div class="card shadow-sm mb-3 p-3">
         <div class="row">
           <div class="col-6">
-            1.Login
+            <h4 class="text-success">1.Login</h4>
             <h5 class="ms-3"><%=username %></h5>
           </div>
           <div class="col-3 m-auto">
@@ -17,7 +25,7 @@
       <div class="mb-3 p-3 shadow-sm card">
         <div class="row">
           <div class="ps-2 col-12 pb-2 mb-3 border-bottom">
-            2.Delivery Address
+            <h4 class="text-success">2.Delivery Address</h4>
           </div>
           <div class="col-8 pb-2">
             <div class="mb-3">
@@ -34,14 +42,14 @@
 
       <div class="mb-3 shadow-sm p-2 card">
         <div class="row">
-          <div class="ps-2 col-12 pb-2 mb-3 border-bottom">3.Order Summary</div>
+          <div class="ps-2 col-12 pb-2 mb-3 border-bottom"><h4 class="text-success">3.Order Summary</h4></div>
         </div>
         <div class="row ">
           <div class="col-12">
-            <a href="/product/<%=item._id %>">
+            <a href="/product/<%=item._id %>" style="text-decoration: none;">
 
                 <div class="card mb-2 p-3">
-                  <div class="row ">
+                  <div class="row justify-content-center">
                     <div class="col-md-3">
                       <% for(let img of item.image){ %>
                       <img
@@ -63,9 +71,6 @@
                         
                         </div>
                       </div>
-                    </div>
-                    <div class="col-md-3 text-center">
-                        Delivery Time
                     </div>
                     <!-- <div class="row">
                         <div class="p-2">
@@ -90,7 +95,7 @@
           
         </div>
       </div>
-      <div class="mb-3 shadow-sm p-2 card">Payment Options</div>
+      <div class="mb-3 shadow-sm p-2 card"><h4 class="text-success">4.Payment Options</h4></div>
     </div>
     <div class="col-12 col-md-3 m-2 py-2 card" style="height: 15vmax">
       <div class="border-bottom mb-3">

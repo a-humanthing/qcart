@@ -28,7 +28,8 @@
             <th> Number </th>
             <th>Category</th>
             <th>Sub Category</th>
-            <th colspan="2" class="text-center">Action</th>
+            <th>Edit</th>
+            <th>Delete</th>
             
         </tr>
     </thead>
@@ -45,9 +46,8 @@
                 <button type="submit" class="btn btn-danger" onclick="return confirm('Do you wann Delete this SubCategory.')">Delete</button>
                 </form>
             </td>
-            <% }else{%> 
-                <td colspan="=2">This SubCategory doest exist</td>
-            <% } %> 
+            <% }%> 
+             
             
         </tr>
         <% } %> 

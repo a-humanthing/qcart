@@ -1,7 +1,9 @@
 const Cart = require("../../model/cart");
 const Product = require("../../model/products");
+const Coupon = require('../../model/coupon');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const { date } = require("joi");
 
 module.exports.viewCart = async (req, res, next) => {
   const id = req.session.user;
@@ -19,7 +21,9 @@ module.exports.viewCart = async (req, res, next) => {
     const cart = cartFull.cartItem;
     res.locals.cartcount = cart.length;
     const totalAmount = cartFull.bill;
-    res.render("products/cart", { cart, cartFull, totalAmount });
+    const coupons = await Coupon.find({expiryDate:{$gt:Date.now()}}).limit(3);
+    const expectedDelivery = new Date(+new Date()+ 7*24*60*60*1000).toLocaleDateString();
+    res.render("products/cart", { cart, cartFull, totalAmount,coupons,expectedDelivery });
   } catch (error) {
     next(error);
   }

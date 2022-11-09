@@ -1,12 +1,22 @@
 <% layout('/layouts/userbp') %>
+
 <div class=" p-5" >
-  <h3>Payment</h3>
   <div class="row justify-content-center">
+    <div class="col-12 col-md-6 m-2 px-0">
+      <h3>Payment</h3>
+      <ul class="list-group list-group-horizontal">
+        <li class="list-group-item ">Step 1</li>
+        <li class="list-group-item ">Step 2</li>
+        <li class="list-group-item">Step 3</li>
+        <li class="list-group-item bg-success">Step 4</li>
+      </ul>
+
+    </div>
     <div class="col-12 col-md-6 m-2 px-0">
       <div class="card shadow-sm mb-3 p-3">
         <div class="row">
           <div class="col-6">
-            1.Login
+            <h4 class="text-success">1.Login</h4>
             <h5 class="ms-3"><%=username %></h5>
           </div>
           <div class="col-3 m-auto">
@@ -17,7 +27,7 @@
       <div class="mb-3 p-3 shadow-sm card">
         <div class="row">
           <div class="ps-2 col-12 pb-2 mb-3 border-bottom">
-            2.Delivery Address
+           <h4 class="text-success"> 2.Delivery Address</h4>
           </div>
           <div class="col-8 pb-2">
             <div class="mb-3">
@@ -34,7 +44,7 @@
 
       <div class="mb-3 shadow-sm p-2 card">
         <div class="row">
-          <div class="ps-2 col-12 pb-2 mb-3 border-bottom">3.Order Summary</div>
+          <div class="ps-2 col-12 pb-2 mb-3 border-bottom"><h4 class="text-success">3.Order Summary</h4></div>
         </div>
         <div class="row ">
           <div class="col-12">
@@ -46,7 +56,7 @@
       <div class="mb-3 shadow-sm p-2 card">
         <div class="row">
             <div class="col-12 ps-2 pb-2 mb-3 border-bottom">
-                4.Payment Options
+                <h4 class="text-success">4.Payment Options</h4>
             </div>
             <form id="pay"  >
                 <div class="col-12">
@@ -90,6 +100,9 @@
     </div>
   </div>
 </div>
+
+
+
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 
@@ -105,7 +118,7 @@
         body: JSON.stringify({ paymethod })
         }).then(res => res.json()).then(data => {
           if(data.cod===true){
-            window.location.href='/product/ordercompletion'
+            window.location.href='/product/orderinfo'
           }
           console.log('data=',data)
           const order = data.order
@@ -146,7 +159,7 @@
           }).then(res=>res.json()).then(data=>{
             console.log('data===',data.success);
             if(data.success){
-              window.location.href='/product/ordercompletion'
+              window.location.href='/product/orderinfo'
             }else{
               alert('false')
               window.location.reload();

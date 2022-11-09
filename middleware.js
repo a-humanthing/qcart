@@ -15,6 +15,17 @@ module.exports.isLoggedIn = (req,res,next)=>{
     
 }
 
+module.exports.isOtpRegistered = (req,res,next)=>{
+    if(req.session.otpRegistered){
+        console.log('wrong')
+        next()
+    }
+    else{
+        req.flash('error','have to register email first')
+        return res.redirect('/user/registerotp')
+    }
+}
+
 module.exports.isActive = (req,res,next)=>{
     if(req.session.otpVerified||(req.user.status&&req.user.status==='active')){
         next();
