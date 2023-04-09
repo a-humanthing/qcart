@@ -2,59 +2,6 @@
 <!-- Start Content -->
 <div class="container py-5">
   <div class="row">
-    <div class="col-lg-3 p-3">
-      <div
-        class="card mb-3 text-center"
-        style="
-          height: 12rem;
-          background-image: url(<%=category.image.url%>);
-          background-size: contain;
-        "
-      >
-        <h1 class="text-white my-auto" style="-webkit-text-stroke: 2px black">
-          <%=category.category%>
-        </h1>
-        <input
-          type="text"
-          name=""
-          id="catid"
-          value="<%=category.category%>"
-          hidden
-        />
-      </div>
-      <div class="card p-3">
-        <h1 class="h2 pb-4 text-success">Categories</h1>
-        <ul class="list-unstyled templatemo-accordion">
-          <div class="form-check pb-3">
-            <input
-              class="form-check-input radioValue"
-              type="radio"
-              name="radio"
-              value="all"
-              onclick="latest('<%= category.category%>')"
-              id="check"
-            />
-            <label class="form-check-label" for="check"> All </label>
-          </div>
-          <% for(let sub of subcategories){ %>
-          <div class="form-check pb-3">
-            <input
-              class="form-check-input radioValue"
-              type="radio"
-              name="radio"
-              value="<%=sub.subcategory %>"
-              onchange="updateItems('<%=sub._id%>')"
-              id="check<%=sub._id%>"
-            />
-            <label class="form-check-label" for="check<%=sub._id%>">
-              <%=sub.subcategory %>
-            </label>
-          </div>
-          <% } %>
-        </ul>
-      </div>
-    </div>
-
     <div class="col-lg-9">
       <div class="row">
         <div class="col-md-6">

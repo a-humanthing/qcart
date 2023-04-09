@@ -1,4 +1,5 @@
-let count = 0;
+let count = 0
+let loadingRequired = true
 function loadProducts(count) {
   fetch("/loadproduct/infinitescroll", {
     method: "POST",
@@ -7,9 +8,10 @@ function loadProducts(count) {
   })
     .then((res) => res.json())
     .then((data) => {
-      console.log(data.filterP);
-      const product = data.filterP;
-      const container = document.getElementById("carousel-related-product");
+      console.log(data.filterP)
+      const product = data.filterP
+      if (product.length == 0) loadingRequired = false
+      const container = document.getElementById("carousel-related-product")
       for (let pro of product) {
         container.innerHTML +=
           '<div class="p-2 pb-3 mb-4 col-md-4">' +
@@ -41,16 +43,16 @@ function loadProducts(count) {
           `<p class="text-center mb-0">₹${pro.price}</p>` +
           "</div>" +
           "</div>" +
-          "</div>";
+          "</div>"
       }
     })
     .catch((e) => {
-      console.log("e", e);
-    });
+      console.log("e", e)
+    })
 }
 
 window.onload = (e) => {
-  const baseCount = 3;
+  const baseCount = 3
   fetch("/loadproduct", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -58,8 +60,8 @@ window.onload = (e) => {
   })
     .then((res) => res.json())
     .then((data) => {
-      const products = data.baseLoad;
-      const container = document.getElementById("carousel-related-product");
+      const products = data.baseLoad
+      const container = document.getElementById("carousel-related-product")
       for (let pro of products) {
         container.innerHTML +=
           '<div class="p-2 pb-3 mb-4 col-md-4">' +
@@ -91,17 +93,33 @@ window.onload = (e) => {
           `<p class="text-center mb-0">₹${pro.price}</p>` +
           "</div>" +
           "</div>" +
-          "</div>";
+          "</div>"
       }
-    });
-};
-
+    })
+}
+function showLoading() {
+  document.getElementById("loading").innerHTML =
+    '<div id="spinner" class="d-flex justify-content-center">' +
+    '<div class="spinner-border" role="status">' +
+    ' <span class="">Loading...</span>' +
+    "</div>" +
+    "</div>"
+}
+function hideLoading() {
+  document.getElementById("loading").innerHTML = ""
+}
 window.addEventListener("scroll", () => {
+  //have to handle when scroll reach actual bottom and there is no product to load
   if (
     window.innerHeight + window.scrollY >=
-    document.documentElement.scrollHeight
+      document.documentElement.scrollHeight - 120 &&
+    loadingRequired
   ) {
-    count++;
-    loadProducts(count);
+    showLoading()
+    setTimeout(() => {
+      hideLoading()
+    }, 2000)
+    count++
+    loadProducts(count)
   }
-});
+})

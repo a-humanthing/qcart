@@ -105,7 +105,6 @@ router.post(
     }
   })
 )
-
 router.get("/login", (req, res) => {
   if (req.session.userVerified || req.session.otpVerified) {
     return res.redirect("/user/home")
@@ -235,6 +234,7 @@ router.get("/logout", (req, res, next) => {
   delete req.session.user
   delete req.session.username
   delete req.session.otpRegistered
+  delete req.session.otpVerified
   res.redirect("/user/login")
 })
 
