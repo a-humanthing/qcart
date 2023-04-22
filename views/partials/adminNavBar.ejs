@@ -1,22 +1,27 @@
-
-<nav class="navbar sticky-top navbar-expand-lg  py-3">
+<nav class="navbar sticky-top navbar-expand-lg py-3">
   <div class="container-fluid">
-    
-      <div class="col-6 offset-3">
+    <!-- <div class="col-6 offset-3">
         <a class="navbar-brand text-white p-0 m-0 " href="#">Qcart</a><img src="/image/icon.png" alt="">
 
-      </div>
-      <% if(adminAvailable){ %> 
-      <div class="navButtons">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a href="/admin/category" class="nav-link btn primaryButton ">Category</a></li>
-          <li class="nav-item"><a href="/admin/subcategory" class="nav-link btn primaryButton">Sub Category</a></li>
-          <li class="nav-item"><a href="/admin/logout" class="nav-link btn primaryButton ">Logout</a></li>
-        </ul>
-      </div>
-      <% } %> 
-    
-    
-    
+      </div> -->
+    <% if(adminAvailable){ %>
+    <div class="navButtons">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a href="/admin/category" class="nav-link btn primaryButton"
+            >Category</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="/admin/subcategory" class="nav-link btn primaryButton"
+            >Sub Category</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="/admin/logout" class="nav-link btn primaryButton">Logout</a>
+        </li>
+      </ul>
+    </div>
+    <% } %>
   </div>
 </nav>
